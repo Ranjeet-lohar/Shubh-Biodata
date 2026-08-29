@@ -1,0 +1,5 @@
+{
+  "/templates/page": "app/templates/page.js",
+  "/page": "app/page.js",
+  "/editor/[templateId]/page": "app/editor/[templateId]/page.js"
+}
