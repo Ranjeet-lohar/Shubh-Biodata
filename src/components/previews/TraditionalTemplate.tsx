@@ -8,20 +8,20 @@ import { BiodataFormData } from "@/lib/types";
 function Row({ label, value }: { label: string; value: string }) {
   if (!value) return null;
   return (
-    <Box sx={{ display: "flex", py: 0.55, gap: 1 }}>
+    <Box sx={{ display: "flex", py: 0.35, gap: 1, breakInside: "avoid" }}>
       <Typography
         sx={{
           width: "44%",
           fontWeight: 600,
-          fontSize: 12,
-          letterSpacing: "0.04em",
+          fontSize: 10.5,
+          letterSpacing: "0.03em",
           textTransform: "uppercase",
           color: "text.secondary",
         }}
       >
         {label}
       </Typography>
-      <Typography sx={{ width: "56%", fontSize: 13.5 }}>{value}</Typography>
+      <Typography sx={{ width: "56%", fontSize: 12 }}>{value}</Typography>
     </Box>
   );
 }
@@ -33,19 +33,19 @@ function Row({ label, value }: { label: string; value: string }) {
 function StackedRow({ label, value }: { label: string; value: string }) {
   if (!value) return null;
   return (
-    <Box sx={{ py: 0.6 }}>
+    <Box sx={{ py: 0.35, breakInside: "avoid" }}>
       <Typography
         sx={{
           fontWeight: 600,
-          fontSize: 10.5,
-          letterSpacing: "0.04em",
+          fontSize: 9.5,
+          letterSpacing: "0.03em",
           textTransform: "uppercase",
           color: "text.secondary",
         }}
       >
         {label}
       </Typography>
-      <Typography sx={{ fontSize: 12.5, lineHeight: 1.4 }}>{value}</Typography>
+      <Typography sx={{ fontSize: 11.5, lineHeight: 1.3 }}>{value}</Typography>
     </Box>
   );
 }
@@ -69,15 +69,15 @@ function Diamond({ color, size = 5 }: { color: string; size?: number }) {
 
 function Heading({ children, color }: { children: React.ReactNode; color: string }) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2.75, mb: 1 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5, mb: 0.6, breakAfter: "avoid" }}>
       <Diamond color={color} />
       <Typography
         sx={{
           color,
           fontFamily: "var(--font-display)",
-          fontSize: 13,
+          fontSize: 11.5,
           fontWeight: 600,
-          letterSpacing: "0.14em",
+          letterSpacing: "0.12em",
           textTransform: "uppercase",
           whiteSpace: "nowrap",
         }}
@@ -94,7 +94,7 @@ function Heading({ children, color }: { children: React.ReactNode; color: string
 // template's identity instead of being a generic border.
 function CornerMotif({ color, style }: { color: string; style: React.CSSProperties }) {
   return (
-    <Box component="svg" viewBox="0 0 60 60" sx={{ position: "absolute", width: 44, height: 44, opacity: 0.65, ...style }}>
+    <Box component="svg" viewBox="0 0 60 60" sx={{ position: "absolute", width: 36, height: 36, opacity: 0.65, ...style }}>
       <path d="M2 22 Q2 2 22 2" fill="none" stroke={color} strokeWidth="1.4" />
       <path d="M2 34 Q2 2 34 2" fill="none" stroke={color} strokeWidth="0.8" opacity="0.6" />
       <circle cx="2" cy="2" r="3.2" fill="none" stroke={color} strokeWidth="1.2" />
@@ -111,10 +111,10 @@ function CornerMotif({ color, style }: { color: string; style: React.CSSProperti
 }
 
 const CORNER_STYLES: React.CSSProperties[] = [
-  { top: 10, left: 10 },
-  { bottom: 10, left: 10, transform: "scaleY(-1)" },
-  { top: 10, right: 10, transform: "scaleX(-1)" },
-  { bottom: 10, right: 10, transform: "scale(-1,-1)" },
+  { top: 8, left: 8 },
+  { bottom: 8, left: 8, transform: "scaleY(-1)" },
+  { top: 8, right: 8, transform: "scaleX(-1)" },
+  { bottom: 8, right: 8, transform: "scale(-1,-1)" },
 ];
 
 export default function TraditionalTemplate({
@@ -136,12 +136,27 @@ export default function TraditionalTemplate({
         border: `1px solid ${accent}66`,
         outline: `8px solid ${bg}`,
         boxShadow: `0 0 0 1px ${border}, 0 0 0 11px ${bg}, 0 0 0 12px ${border}33`,
-        p: { xs: 3, sm: 4.5 },
-        pt: 3.5,
+        p: { xs: 3, sm: 3.5 },
+        pt: 2.75,
         fontFamily: "var(--font-body)",
         position: "relative",
         backgroundImage: `radial-gradient(${accent}22 1px, transparent 1px)`,
         backgroundSize: "16px 16px",
+        overflow: "hidden",
+        // --- Print: pinned to exactly one A4 page -----------------------
+        // Fixed height (not minHeight) + overflow hidden is the hard
+        // boundary. The ring "border" here is a box-shadow stack (not a
+        // real border), so it scales with the box automatically — only
+        // the inner padding needs an mm-safe override for print.
+        "@media print": {
+          bgcolor: `${bg} !important`,
+          WebkitPrintColorAdjust: "exact",
+          printColorAdjust: "exact",
+          width: "210mm",
+          height: "297mm",
+          boxSizing: "border-box",
+          p: "9mm 11mm",
+        },
       }}
     >
       {CORNER_STYLES.map((style, i) => (
@@ -149,20 +164,20 @@ export default function TraditionalTemplate({
       ))}
 
       {/* Header */}
-      <Box sx={{ textAlign: "center", mb: 1, position: "relative" }}>
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1.2, mb: 0.5 }}>
-          <Box sx={{ width: 28, height: "1px", bgcolor: accent }} />
+      <Box sx={{ textAlign: "center", mb: 0.5, position: "relative" }}>
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1.2, mb: 0.35 }}>
+          <Box sx={{ width: 24, height: "1px", bgcolor: accent }} />
           <Typography
             sx={{
               color: accent,
               fontFamily: "var(--font-display)",
-              fontSize: 14,
-              letterSpacing: "0.3em",
+              fontSize: 12,
+              letterSpacing: "0.26em",
             }}
           >
             ॐ श्री गणेशाय नमः
           </Typography>
-          <Box sx={{ width: 28, height: "1px", bgcolor: accent }} />
+          <Box sx={{ width: 24, height: "1px", bgcolor: accent }} />
         </Box>
 
         <Typography
@@ -171,18 +186,18 @@ export default function TraditionalTemplate({
             fontStyle: "italic",
             fontWeight: 700,
             color: border,
-            mt: 1.25,
-            fontSize: { xs: 28, sm: 36 },
+            mt: 0.75,
+            fontSize: { xs: 22, sm: 28 },
             lineHeight: 1.1,
           }}
         >
           {data.personal.fullName || "Your Name Here"}
         </Typography>
 
-        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, my: 1.25 }}>
-          <Box sx={{ width: 60, height: "1px", bgcolor: accent, opacity: 0.6 }} />
-          <Diamond color={accent} size={6} />
-          <Box sx={{ width: 60, height: "1px", bgcolor: accent, opacity: 0.6 }} />
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, my: 0.85 }}>
+          <Box sx={{ width: 48, height: "1px", bgcolor: accent, opacity: 0.6 }} />
+          <Diamond color={accent} size={5} />
+          <Box sx={{ width: 48, height: "1px", bgcolor: accent, opacity: 0.6 }} />
         </Box>
 
         <Typography
@@ -190,15 +205,15 @@ export default function TraditionalTemplate({
             color: ink,
             opacity: 0.65,
             fontStyle: "italic",
-            fontSize: 12.5,
-            letterSpacing: "0.05em",
+            fontSize: 11,
+            letterSpacing: "0.04em",
           }}
         >
           Biodata for Marriage
         </Typography>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 3.5, mt: 1 }}>
+      <Box sx={{ display: "flex", gap: 3, mt: 0.5 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Heading color={border}>Personal Details</Heading>
           <Row label="Date of Birth" value={data.personal.dob} />
@@ -212,17 +227,17 @@ export default function TraditionalTemplate({
           <Row label="Manglik" value={data.personal.manglik} />
           <Row label="Diet" value={data.personal.diet} />
 
-          <Heading color={border}>Education & Career</Heading>
+          <Heading color={border}>Education &amp; Career</Heading>
           <Row label="Qualification" value={data.education.qualification} />
           <Row label="Occupation" value={data.education.occupation} />
           <Row label="Company" value={data.education.company} />
           <Row label="Annual Income" value={data.education.income} />
         </Box>
 
-        <Box sx={{ width: 156, flexShrink: 0, textAlign: "center" }}>
+        <Box sx={{ width: 132, flexShrink: 0, textAlign: "center" }}>
           <Box
             sx={{
-              p: "5px",
+              p: "4px",
               border: `1px solid ${accent}`,
               display: "inline-block",
               bgcolor: bg,
@@ -232,12 +247,12 @@ export default function TraditionalTemplate({
               src={data.photoDataUrl || undefined}
               variant="rounded"
               sx={{
-                width: 122,
-                height: 152,
+                width: 104,
+                height: 130,
                 border: `2px solid ${border}`,
                 borderRadius: "2px",
                 bgcolor: "#F1E7DC",
-                fontSize: 12,
+                fontSize: 11,
                 color: border,
               }}
             >
@@ -265,16 +280,16 @@ export default function TraditionalTemplate({
       {data.about && (
         <>
           <Heading color={border}>About Me</Heading>
-          <Typography sx={{ fontSize: 13, lineHeight: 1.7, fontStyle: "italic", color: ink }}>
+          <Typography sx={{ fontSize: 11.5, lineHeight: 1.5, fontStyle: "italic", color: ink }}>
             {data.about}
           </Typography>
         </>
       )}
 
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 3 }}>
-        <Box sx={{ width: 40, height: "1px", bgcolor: accent, opacity: 0.5 }} />
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 1.5 }}>
+        <Box sx={{ width: 36, height: "1px", bgcolor: accent, opacity: 0.5 }} />
         <Diamond color={accent} size={4} />
-        <Box sx={{ width: 40, height: "1px", bgcolor: accent, opacity: 0.5 }} />
+        <Box sx={{ width: 36, height: "1px", bgcolor: accent, opacity: 0.5 }} />
       </Box>
     </Box>
   );

@@ -8,11 +8,11 @@ import { BiodataFormData } from "@/lib/types";
 function Row({ label, value, ink, muted }: { label: string; value: string; ink: string; muted: string }) {
   if (!value) return null;
   return (
-    <Box sx={{ display: "flex", py: 0.55, gap: 1.5 }}>
-      <Typography sx={{ width: "42%", fontSize: 10.5, letterSpacing: "0.1em", textTransform: "uppercase", color: muted, fontWeight: 600 }}>
+    <Box sx={{ display: "flex", py: 0.35, gap: 1.5, breakInside: "avoid" }}>
+      <Typography sx={{ width: "42%", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", color: muted, fontWeight: 600 }}>
         {label}
       </Typography>
-      <Typography sx={{ width: "58%", fontSize: 12, color: ink, fontWeight: 500 }}>{value}</Typography>
+      <Typography sx={{ width: "58%", fontSize: 11.5, color: ink, fontWeight: 500 }}>{value}</Typography>
     </Box>
   );
 }
@@ -21,11 +21,11 @@ function Row({ label, value, ink, muted }: { label: string; value: string; ink: 
 // the "V" step motif deco borders are built from.
 function Heading({ children, gold }: { children: React.ReactNode; gold: string }) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 2.5, mb: 1 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mt: 1.5, mb: 0.6, breakAfter: "avoid" }}>
       <Box component="svg" viewBox="0 0 10 10" sx={{ width: 9, height: 9, flexShrink: 0 }}>
         <path d="M0 0 L5 5 L0 10" fill="none" stroke={gold} strokeWidth="1.4" />
       </Box>
-      <Typography sx={{ fontSize: 11.5, fontWeight: 700, letterSpacing: "0.22em", textTransform: "uppercase", color: gold, whiteSpace: "nowrap" }}>
+      <Typography sx={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.2em", textTransform: "uppercase", color: gold, whiteSpace: "nowrap" }}>
         {children}
       </Typography>
       <Box sx={{ flex: 1, height: "1px", bgcolor: gold, opacity: 0.4 }} />
@@ -38,7 +38,7 @@ function Heading({ children, gold }: { children: React.ReactNode; gold: string }
 // only so it reads as structure, not decoration.
 function StepCorner({ gold, style }: { gold: string; style: React.CSSProperties }) {
   return (
-    <Box component="svg" viewBox="0 0 40 40" sx={{ position: "absolute", width: 34, height: 34, ...style }}>
+    <Box component="svg" viewBox="0 0 40 40" sx={{ position: "absolute", width: 28, height: 28, ...style }}>
       <path d="M0 40 L0 26 L8 26 L8 18 L16 18 L16 10 L26 10 L26 0" fill="none" stroke={gold} strokeWidth="1.6" />
     </Box>
   );
@@ -50,7 +50,7 @@ function StepCorner({ gold, style }: { gold: string; style: React.CSSProperties 
 function Sunburst({ gold }: { gold: string }) {
   const rays = 21;
   return (
-    <Box component="svg" viewBox="0 0 300 90" sx={{ position: "absolute", top: -10, left: "50%", transform: "translateX(-50%)", width: 300, height: 90, opacity: 0.55, pointerEvents: "none" }}>
+    <Box component="svg" viewBox="0 0 300 90" sx={{ position: "absolute", top: -6, left: "50%", transform: "translateX(-50%)", width: 260, height: 78, opacity: 0.55, pointerEvents: "none" }}>
       {Array.from({ length: rays }).map((_, i) => {
         const t = i / (rays - 1);
         const angle = Math.PI * (0.12 + t * 0.76);
@@ -64,10 +64,10 @@ function Sunburst({ gold }: { gold: string }) {
 }
 
 const CORNER_STYLES: React.CSSProperties[] = [
-  { top: 10, left: 10 },
-  { bottom: 10, left: 10, transform: "scaleY(-1)" },
-  { top: 10, right: 10, transform: "scaleX(-1)" },
-  { bottom: 10, right: 10, transform: "scale(-1,-1)" },
+  { top: 8, left: 8 },
+  { bottom: 8, left: 8, transform: "scaleY(-1)" },
+  { top: 8, right: 8, transform: "scaleX(-1)" },
+  { bottom: 8, right: 8, transform: "scale(-1,-1)" },
 ];
 
 export default function DecoTemplate({
@@ -88,10 +88,24 @@ export default function DecoTemplate({
       sx={{
         position: "relative",
         bgcolor: bg,
-        p: { xs: 3.5, sm: 5 },
+        p: { xs: 3, sm: 3.5 },
         fontFamily: "var(--font-body)",
         boxShadow: `0 0 0 1px ${gold}, 0 0 0 6px ${bg}, 0 0 0 7px ${gold}`,
         overflow: "hidden",
+        // --- Print: pinned to exactly one A4 page -----------------------
+        // A fixed height + overflow hidden is what stops a stray extra
+        // line of content from spilling a near-empty second page — the
+        // ring "border" (box-shadow) is redrawn with mm-safe insets so it
+        // doesn't get clipped by the page edge either.
+        "@media print": {
+          bgcolor: `${bg} !important`,
+          WebkitPrintColorAdjust: "exact",
+          printColorAdjust: "exact",
+          width: "210mm",
+          height: "297mm",
+          boxSizing: "border-box",
+          p: "10mm 12mm",
+        },
       }}
     >
       {CORNER_STYLES.map((style, i) => (
@@ -99,15 +113,15 @@ export default function DecoTemplate({
       ))}
 
       {/* Header */}
-      <Box sx={{ position: "relative", textAlign: "center", pt: 5, mb: 1 }}>
+      <Box sx={{ position: "relative", textAlign: "center", pt: 3, mb: 0.5 }}>
         <Sunburst gold={gold} />
         <Box sx={{ position: "relative" }}>
           <Typography
             sx={{
               fontFamily: "var(--font-display)",
               fontWeight: 700,
-              fontSize: { xs: 24, sm: 30 },
-              letterSpacing: "0.06em",
+              fontSize: { xs: 21, sm: 25 },
+              letterSpacing: "0.05em",
               textTransform: "uppercase",
               color: ink,
               lineHeight: 1.2,
@@ -115,18 +129,18 @@ export default function DecoTemplate({
           >
             {data.personal.fullName || "Your Name Here"}
           </Typography>
-          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, my: 1.25 }}>
-            <Box sx={{ width: 50, height: "1px", bgcolor: gold }} />
-            <Box sx={{ width: 6, height: 6, bgcolor: gold, transform: "rotate(45deg)" }} />
-            <Box sx={{ width: 50, height: "1px", bgcolor: gold }} />
+          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, my: 0.85 }}>
+            <Box sx={{ width: 44, height: "1px", bgcolor: gold }} />
+            <Box sx={{ width: 5, height: 5, bgcolor: gold, transform: "rotate(45deg)" }} />
+            <Box sx={{ width: 44, height: "1px", bgcolor: gold }} />
           </Box>
-          <Typography sx={{ color: muted, fontSize: 11.5, letterSpacing: "0.18em", textTransform: "uppercase" }}>
+          <Typography sx={{ color: muted, fontSize: 10.5, letterSpacing: "0.16em", textTransform: "uppercase" }}>
             Biodata for Marriage
           </Typography>
         </Box>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 3.5, mt: 2 }}>
+      <Box sx={{ display: "flex", gap: 3, mt: 1 }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Heading gold={gold}>Personal</Heading>
           <Row label="Date of Birth" value={data.personal.dob} ink={ink} muted={muted} />
@@ -147,12 +161,12 @@ export default function DecoTemplate({
           <Row label="Annual Income" value={data.education.income} ink={ink} muted={muted} />
         </Box>
 
-        <Box sx={{ width: 148, flexShrink: 0, textAlign: "center" }}>
-          <Box sx={{ p: "4px", border: `1px solid ${gold}`, display: "inline-block" }}>
+        <Box sx={{ width: 130, flexShrink: 0, textAlign: "center" }}>
+          <Box sx={{ p: "3px", border: `1px solid ${gold}`, display: "inline-block" }}>
             <Avatar
               src={data.photoDataUrl || undefined}
               variant="square"
-              sx={{ width: 122, height: 152, bgcolor: isNoir ? "#241E17" : "#F1E7D3", fontSize: 12, color: muted }}
+              sx={{ width: 106, height: 132, bgcolor: isNoir ? "#241E17" : "#F1E7D3", fontSize: 11, color: muted }}
             >
               Photo
             </Avatar>
@@ -160,7 +174,7 @@ export default function DecoTemplate({
 
           <Heading gold={gold}>Family</Heading>
           <Box sx={{ textAlign: "left" }}>
-            <Box sx={{ py: 0.6 }}>
+            <Box sx={{ py: 0.3 }}>
               {[
                 ["Father", data.family.fatherName],
                 ["Mother", data.family.motherName],
@@ -169,11 +183,11 @@ export default function DecoTemplate({
                 ["Native Place", data.family.nativePlace],
               ].map(([label, value]) =>
                 value ? (
-                  <Box key={label} sx={{ mb: 1 }}>
-                    <Typography sx={{ fontSize: 9.5, letterSpacing: "0.08em", textTransform: "uppercase", color: muted, fontWeight: 700 }}>
+                  <Box key={label} sx={{ mb: 0.6, breakInside: "avoid" }}>
+                    <Typography sx={{ fontSize: 9, letterSpacing: "0.07em", textTransform: "uppercase", color: muted, fontWeight: 700 }}>
                       {label}
                     </Typography>
-                    <Typography sx={{ fontSize: 12, color: ink, lineHeight: 1.4 }}>{value}</Typography>
+                    <Typography sx={{ fontSize: 11, color: ink, lineHeight: 1.3 }}>{value}</Typography>
                   </Box>
                 ) : null
               )}
@@ -191,14 +205,14 @@ export default function DecoTemplate({
       {data.about && (
         <>
           <Heading gold={gold}>About</Heading>
-          <Typography sx={{ fontSize: 12, lineHeight: 1.7, color: ink, fontStyle: "italic" }}>{data.about}</Typography>
+          <Typography sx={{ fontSize: 11.5, lineHeight: 1.5, color: ink, fontStyle: "italic" }}>{data.about}</Typography>
         </>
       )}
 
-      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 3 }}>
-        <Box sx={{ width: 40, height: "1px", bgcolor: gold, opacity: 0.5 }} />
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 1.5 }}>
+        <Box sx={{ width: 36, height: "1px", bgcolor: gold, opacity: 0.5 }} />
         <Box sx={{ width: 5, height: 5, bgcolor: gold, transform: "rotate(45deg)" }} />
-        <Box sx={{ width: 40, height: "1px", bgcolor: gold, opacity: 0.5 }} />
+        <Box sx={{ width: 36, height: "1px", bgcolor: gold, opacity: 0.5 }} />
       </Box>
     </Box>
   );

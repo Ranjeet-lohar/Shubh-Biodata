@@ -38,12 +38,12 @@ function Monogram({ letter }: { letter: string }) {
       aria-hidden
       sx={{
         position: "absolute",
-        top: -22,
+        top: -18,
         right: 0,
         fontFamily: "var(--font-display)",
         fontStyle: "italic",
         fontWeight: 700,
-        fontSize: 130,
+        fontSize: 108,
         lineHeight: 1,
         color: GOLD_SOFT,
         opacity: 0.45,
@@ -64,27 +64,28 @@ function Line({ label, value }: { label: string; value: string }) {
     <Box
       sx={{
         display: "grid",
-        gridTemplateColumns: "110px 1fr",
+        gridTemplateColumns: "100px 1fr",
         columnGap: 1.5,
-        py: 0.8,
+        py: 0.5,
         borderBottom: `1px solid ${LINE}`,
+        breakInside: "avoid",
       }}
     >
-      <Typography sx={{ fontSize: 11.5, color: "#8A7C6B" }}>{label}</Typography>
-      <Typography sx={{ fontSize: 12.5, fontWeight: 600, color: INK, lineHeight: 1.5 }}>{value}</Typography>
+      <Typography sx={{ fontSize: 10.5, color: "#8A7C6B" }}>{label}</Typography>
+      <Typography sx={{ fontSize: 11.5, fontWeight: 600, color: INK, lineHeight: 1.4 }}>{value}</Typography>
     </Box>
   );
 }
 
 function Block({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <Box sx={{ mb: 2.75, breakInside: "avoid" }}>
-      <Box sx={{ display: "flex", alignItems: "baseline", gap: 1.25, mb: 1 }}>
+    <Box sx={{ mb: 1.75, breakInside: "avoid" }}>
+      <Box sx={{ display: "flex", alignItems: "baseline", gap: 1.25, mb: 0.6 }}>
         <Typography
           sx={{
-            fontSize: 10.5,
+            fontSize: 9.5,
             fontWeight: 700,
-            letterSpacing: "0.14em",
+            letterSpacing: "0.13em",
             textTransform: "uppercase",
             color: GOLD,
             whiteSpace: "nowrap",
@@ -112,6 +113,21 @@ export default function MinimalTemplate({ data }: { data: BiodataFormData }) {
         p: { xs: 3.5, sm: 5 },
         fontFamily: "var(--font-body)",
         overflow: "hidden",
+        // --- Print: pinned to exactly one A4 page -----------------------
+        // Fixed height (not minHeight) + overflow hidden is the hard
+        // boundary; padding switches to mm so margins stay predictable
+        // regardless of how the on-screen `sx` padding scales.
+        "@media print": {
+          bgcolor: `${PAPER} !important`,
+          WebkitPrintColorAdjust: "exact",
+          printColorAdjust: "exact",
+          border: "none",
+          boxShadow: "none",
+          width: "210mm",
+          height: "297mm",
+          boxSizing: "border-box",
+          p: "12mm 14mm",
+        },
       }}
     >
       {/* Foil rule, matching the editor chrome */}
@@ -129,14 +145,14 @@ export default function MinimalTemplate({ data }: { data: BiodataFormData }) {
 
       {/* Header — letterhead block: photo, name, monogram, a tightened
           rule underneath so it reads as a masthead rather than a banner. */}
-      <Box sx={{ position: "relative", pt: 1, mb: 3.5 }}>
+      <Box sx={{ position: "relative", pt: 0.5, mb: 2 }}>
         <Monogram letter={initial} />
-        <Box sx={{ display: "flex", alignItems: "center", gap: 3, position: "relative" }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 2.5, position: "relative" }}>
           <Box sx={{ p: "3px", borderRadius: "10px", border: `1px solid ${GOLD_SOFT}`, flexShrink: 0 }}>
             <Avatar
               src={data.photoDataUrl || undefined}
               variant="rounded"
-              sx={{ width: 82, height: 100, bgcolor: "#F7F1E8", borderRadius: "8px", fontSize: 12, color: "#B4A48C" }}
+              sx={{ width: 68, height: 84, bgcolor: "#F7F1E8", borderRadius: "8px", fontSize: 11, color: "#B4A48C" }}
             >
               Photo
             </Avatar>
@@ -147,19 +163,19 @@ export default function MinimalTemplate({ data }: { data: BiodataFormData }) {
                 fontFamily: "var(--font-display)",
                 fontStyle: "italic",
                 fontWeight: 600,
-                fontSize: 28,
+                fontSize: 23,
                 color: INK,
                 lineHeight: 1.15,
               }}
             >
               {data.personal.fullName || "Your Name Here"}
             </Typography>
-            <Typography sx={{ fontSize: 12, fontWeight: 700, color: GOLD, letterSpacing: "0.06em", mt: 0.5 }}>
+            <Typography sx={{ fontSize: 11, fontWeight: 700, color: GOLD, letterSpacing: "0.05em", mt: 0.4 }}>
               {[data.education.occupation, data.contact.city].filter(Boolean).join("   ·   ")}
             </Typography>
           </Box>
         </Box>
-        <Box sx={{ height: "1px", bgcolor: LINE, mt: 2.5 }} />
+        <Box sx={{ height: "1px", bgcolor: LINE, mt: 1.75 }} />
       </Box>
 
       {/* Two-column body — keeps the whole thing on one printed page
@@ -168,7 +184,7 @@ export default function MinimalTemplate({ data }: { data: BiodataFormData }) {
         sx={{
           display: "grid",
           gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr" },
-          columnGap: 5,
+          columnGap: 4,
         }}
       >
         <Box>
@@ -206,7 +222,7 @@ export default function MinimalTemplate({ data }: { data: BiodataFormData }) {
         {data.about && (
           <Box sx={{ gridColumn: { xs: "1", sm: "1 / -1" } }}>
             <Block title="About">
-              <Typography sx={{ fontSize: 12.5, lineHeight: 1.7, color: INK, fontStyle: "italic" }}>
+              <Typography sx={{ fontSize: 11.5, lineHeight: 1.55, color: INK, fontStyle: "italic" }}>
                 &ldquo;{data.about}&rdquo;
               </Typography>
             </Block>

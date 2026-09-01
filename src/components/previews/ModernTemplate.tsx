@@ -3,32 +3,50 @@
 import { Box, Typography, Avatar } from "@mui/material";
 import { BiodataFormData } from "@/lib/types";
 
-// ---- Design tokens (shared with the editor shell + MinimalTemplate) ------
-const INK = "#241A14";
-const GOLD = "#C6952F";
-const GOLD_SOFT = "#E7D3A6";
-const LINE = "#EFE7DA";
+// ---- Design tokens ---------------------------------------------------
+// A different palette/mood from ModernTemplate on purpose: deep emerald +
+// antique gold on warm ivory, Art-Deco symmetry instead of a sidebar split.
+const INK = "#16302B";
+const GOLD = "#B8923F";
+const GOLD_DEEP = "#8C6B26";
+const IVORY = "#FBF6EC";
+const LINE = "#E3D6B8";
 
-// Each field is its own label-then-value block. Because label and value each
-// get the full column width on their own line, a long value just wraps
-// within itself — it can never squeeze into a narrow leftover flex slot the
-// way it did in the old 3-column row, which is what caused the crowding.
 function Item({ label, value }: { label: string; value: string }) {
   if (!value) return null;
   return (
-    <Box sx={{ py: 0.9, borderBottom: `1px solid ${LINE}` }}>
-      <Typography sx={{ fontSize: 10.5, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#A9967A" }}>
+    <Box sx={{ py: 0.85 }}>
+      <Typography
+        sx={{
+          fontSize: 10,
+          fontWeight: 700,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: GOLD_DEEP,
+        }}
+      >
         {label}
       </Typography>
-      <Typography sx={{ fontSize: 13.5, fontWeight: 600, color: INK, lineHeight: 1.45, mt: 0.25 }}>{value}</Typography>
+      <Typography sx={{ fontSize: 13.5, fontWeight: 600, color: INK, lineHeight: 1.45, mt: 0.2 }}>
+        {value}
+      </Typography>
     </Box>
   );
 }
 
 function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
-    <Box sx={{ display: "flex", alignItems: "baseline", gap: 1.25, mb: 0.5 }}>
-      <Typography sx={{ fontSize: 11, fontWeight: 700, letterSpacing: "0.14em", textTransform: "uppercase", color: GOLD, whiteSpace: "nowrap" }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1 }}>
+      <Box sx={{ width: 5, height: 5, bgcolor: GOLD, transform: "rotate(45deg)" }} />
+      <Typography
+        sx={{
+          fontSize: 11,
+          fontWeight: 700,
+          letterSpacing: "0.18em",
+          textTransform: "uppercase",
+          color: GOLD_DEEP,
+        }}
+      >
         {children}
       </Typography>
       <Box sx={{ flex: 1, height: "1px", bgcolor: LINE }} />
@@ -36,50 +54,33 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
-// A single slanted accent shape in the sidebar corner — the one geometric
-// gesture in an otherwise plain panel, standing in for the ornament every
-// other template in the set gets somewhere.
-function AccentWedge() {
+// A row of small diamonds, used above/below the header as the recurring
+// Art-Deco motif instead of a single ornament in one corner.
+function DiamondRule() {
   return (
-    <Box
-      sx={{
-        position: "absolute",
-        top: 0,
-        right: 0,
-        width: 90,
-        height: 90,
-        overflow: "hidden",
-        pointerEvents: "none",
-      }}
-    >
-      <Box
-        sx={{
-          position: "absolute",
-          top: -45,
-          right: -45,
-          width: 90,
-          height: 90,
-          bgcolor: GOLD,
-          opacity: 0.16,
-          transform: "rotate(45deg)",
-        }}
-      />
+    <Box sx={{ display: "flex", justifyContent: "center", gap: 1.1, my: 1.5 }}>
+      {Array.from({ length: 7 }).map((_, i) => (
+        <Box
+          key={i}
+          sx={{
+            width: i === 3 ? 8 : 5,
+            height: i === 3 ? 8 : 5,
+            bgcolor: i === 3 ? GOLD : GOLD_SOFT_COLOR(i),
+            transform: "rotate(45deg)",
+          }}
+        />
+      ))}
     </Box>
   );
 }
 
-export default function ModernTemplate({
-  data,
-  variant = "slate",
-}: {
-  data: BiodataFormData;
-  variant?: "slate" | "teal";
-}) {
-  // Two dark options within the shared palette, rather than an unrelated
-  // green/teal accent — keeps this template feeling like the same product
-  // as the editor and the Minimal template.
-  const dark = variant === "slate" ? "#3B141C" : "#1F332B";
+function GOLD_SOFT_COLOR(i: number) {
+  // fades outward from the centre diamond
+  const distance = Math.abs(i - 3);
+  return distance === 1 ? GOLD : "#D8C48F";
+}
 
+export default function DecoTemplate({ data }: { data: BiodataFormData }) {
   const personalItems: [string, string][] = [
     ["Date of Birth", data.personal.dob],
     ["Place of Birth", data.personal.placeOfBirth],
@@ -100,54 +101,97 @@ export default function ModernTemplate({
   return (
     <Box
       sx={{
-        display: "flex",
-        bgcolor: "#fff",
+        bgcolor: IVORY,
         fontFamily: "var(--font-body)",
         minHeight: 500,
         border: `1px solid ${LINE}`,
-        borderRadius: "14px",
-        boxShadow: `0 18px 44px ${INK}14`,
+        borderRadius: "4px",
+        boxShadow: `0 18px 44px ${INK}1A`,
         overflow: "hidden",
+        position: "relative",
       }}
     >
-      <Box sx={{ position: "relative", width: "34%", bgcolor: dark, color: "#fff", p: 3, display: "flex", flexDirection: "column" }}>
-        <AccentWedge />
-        <Box sx={{ p: "3px", borderRadius: "10px", border: `1px solid rgba(255,255,255,0.25)`, mb: 2, alignSelf: "flex-start", width: "100%", position: "relative" }}>
+      {/* Outer deco frame — a second inset border is the signature device */}
+      <Box
+        sx={{
+          position: "absolute",
+          inset: 10,
+          border: `1px solid ${LINE}`,
+          pointerEvents: "none",
+        }}
+      />
+
+      <Box sx={{ position: "relative", px: 4, pt: 4, pb: 3.5, textAlign: "center" }}>
+        <Box
+          sx={{
+            width: 108,
+            height: 108,
+            mx: "auto",
+            p: "5px",
+            borderRadius: "50%",
+            border: `2px solid ${GOLD}`,
+            outline: `1px solid ${LINE}`,
+            outlineOffset: "4px",
+          }}
+        >
           <Avatar
             src={data.photoDataUrl || undefined}
-            variant="rounded"
-            sx={{ width: "100%", height: 160, bgcolor: "rgba(255,255,255,0.08)", borderRadius: "8px" }}
+            sx={{ width: "100%", height: "100%", bgcolor: `${INK}0D`, color: INK }}
           >
             Photo
           </Avatar>
         </Box>
+
         <Typography
-          sx={{ fontFamily: "var(--font-display)", fontStyle: "italic", fontWeight: 600, color: "#fff", fontSize: 27, lineHeight: 1.16, position: "relative" }}
+          sx={{
+            fontFamily: "var(--font-display)",
+            fontWeight: 700,
+            color: INK,
+            fontSize: 26,
+            letterSpacing: "0.03em",
+            mt: 2,
+          }}
         >
           {data.personal.fullName || "Your Name Here"}
         </Typography>
-        <Box sx={{ width: 40, height: 2, bgcolor: GOLD, my: 1.5 }} />
-        <Typography sx={{ fontSize: 12.5, color: "rgba(255,255,255,0.75)", letterSpacing: "0.02em" }}>
-          {[data.education.occupation, data.contact.city].filter(Boolean).join("   ·   ") || "Occupation   ·   City"}
+
+        <DiamondRule />
+
+        <Typography sx={{ fontSize: 12.5, color: GOLD_DEEP, letterSpacing: "0.06em" }}>
+          {[data.education.occupation, data.contact.city].filter(Boolean).join("   •   ") ||
+            "Occupation   •   City"}
         </Typography>
 
-        <Box sx={{ mt: "auto", pt: 3, borderTop: "1px solid rgba(255,255,255,0.14)" }}>
-          <Typography sx={{ fontSize: 10.5, color: GOLD, letterSpacing: "0.14em", fontWeight: 700, mb: 0.75 }}>
-            CONTACT
-          </Typography>
-          <Typography sx={{ fontSize: 12, color: "rgba(255,255,255,0.85)", py: 0.15 }}>{data.contact.phone}</Typography>
-          <Typography sx={{ fontSize: 12, color: "rgba(255,255,255,0.85)", py: 0.15 }}>{data.contact.email}</Typography>
-        </Box>
-      </Box>
-
-      <Box sx={{ width: "66%", p: 3.5 }}>
         {data.about && (
-          <Typography sx={{ fontSize: 13, fontStyle: "italic", color: "#6B5D4E", mb: 2.5, lineHeight: 1.6 }}>
+          <Typography
+            sx={{
+              fontSize: 13,
+              fontStyle: "italic",
+              color: "#5B5142",
+              mt: 2,
+              lineHeight: 1.6,
+              maxWidth: 440,
+              mx: "auto",
+            }}
+          >
             &ldquo;{data.about}&rdquo;
           </Typography>
         )}
+      </Box>
+
+      <Box sx={{ position: "relative", px: 4, pb: 4 }}>
         <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", columnGap: 4, position: "relative" }}>
-          <Box sx={{ position: "absolute", left: "50%", top: 0, bottom: 0, width: "1px", bgcolor: LINE, display: { xs: "none", sm: "block" } }} />
+          <Box
+            sx={{
+              position: "absolute",
+              left: "50%",
+              top: 4,
+              bottom: 4,
+              width: "1px",
+              bgcolor: LINE,
+              display: { xs: "none", sm: "block" },
+            }}
+          />
           <Box>
             <SectionHeading>Personal</SectionHeading>
             {personalItems.map(([label, value]) => (
@@ -160,6 +204,23 @@ export default function ModernTemplate({
               <Item key={label} label={label} value={value} />
             ))}
           </Box>
+        </Box>
+
+        <Box
+          sx={{
+            mt: 3,
+            pt: 2,
+            borderTop: `1px solid ${LINE}`,
+            display: "flex",
+            justifyContent: "center",
+            gap: 3,
+          }}
+        >
+          <Typography sx={{ fontSize: 12, color: INK }}>{data.contact.phone}</Typography>
+          {data.contact.phone && data.contact.email && (
+            <Box sx={{ width: 4, height: 4, bgcolor: GOLD, transform: "rotate(45deg)", alignSelf: "center" }} />
+          )}
+          <Typography sx={{ fontSize: 12, color: INK }}>{data.contact.email}</Typography>
         </Box>
       </Box>
     </Box>

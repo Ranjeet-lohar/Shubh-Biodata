@@ -24,26 +24,7 @@ export default function TemplateCard({ template, compact = false }: { template: 
         <Box sx={{ position: "absolute", inset: 0 }}>
           <Image src={template.previewImage} alt={template.name} fill style={{ objectFit: "contain" }} />
         </Box>
-        {/* <Box sx={{ position: "absolute", inset: 0, border: `10px solid ${template.swatch[0]}` }} />
-        <Box sx={{ position: "relative", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 1 }}>
-          <Box sx={{ width: 44, height: 56, bgcolor: template.swatch[1], borderRadius: 0.5, opacity: 0.85 }} />
-          <Box sx={{ width: "60%", height: 6, bgcolor: template.swatch[0], borderRadius: 4, opacity: 0.8 }} />
-          {[1, 0.7, 0.85].map((w, i) => (
-            <Box key={i} sx={{ width: `${w * 55}%`, height: 4, bgcolor: template.swatch[0], opacity: 0.3, borderRadius: 4 }} />
-          ))}
-        </Box>
-        <Chip
-          label={template.category}
-          size="small"
-          sx={{
-            position: "absolute",
-            top: 10,
-            right: 10,
-            bgcolor: "rgba(255,255,255,0.9)",
-            color: template.swatch[0],
-            fontSize: 11,
-          }}
-        /> */}
+        
       </Box>
       <Box sx={{ p: 2 }}>
         <Typography sx={{ fontWeight: 700, fontSize: 15 }}>{template.name}</Typography>
