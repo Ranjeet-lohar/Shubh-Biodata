@@ -9,6 +9,7 @@ import ModernTemplate from "./ModernTemplate";
 import MinimalTemplate from "./MinimalTemplate";
 import ElegantTemplate from "./ElegantTemplate";
 import MonogramTemplate from "./MonogramTemplate";
+import ContemporaryTemplate from "./ContemporaryTemplate";
 
 const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: BiodataFormData }>(
   function TemplatePreview({ templateId, data }, ref) {
@@ -38,6 +39,21 @@ const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: B
         break;
       case "minimal-ivory":
         content = <MinimalTemplate data={data} />;
+        break;
+      case "classic-contemporary":
+        content = <ContemporaryTemplate data={data} variant="gold" />;
+        break;
+      case "sunset-atelier":
+        content = <ContemporaryTemplate data={data} variant="rose" />;
+        break;
+      case "emerald-heritage":
+        content = <ContemporaryTemplate data={data} variant="teal" />;
+        break;
+      case "pearl-luxe":
+        content = <ContemporaryTemplate data={data} variant="navy" />;
+        break;
+      case "saffron-legacy":
+        content = <ContemporaryTemplate data={data} variant="copper" />;
         break;
       default:
         content = <TraditionalTemplate data={data} variant="wine" />;

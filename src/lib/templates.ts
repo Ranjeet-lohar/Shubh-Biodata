@@ -67,6 +67,46 @@ export const templates: TemplateMeta[] = [
     swatch: ["#4E1230", "#E7C77C", "#FFF9F5"],
     previewImage: `/My_Biodata1.png`,
   },
+  {
+    id: "classic-contemporary",
+    name: "Classic Contemporary",
+    category: "Modern",
+    blurb: "Warm editorial layout with a refined ivory canvas and a balanced, premium reading rhythm.",
+    swatch: ["#2F241C", "#C7A96C", "#F6F1E8"],
+    previewImage: `/My_Biodata2.png`,
+  },
+  {
+    id: "sunset-atelier",
+    name: "Sunset Atelier",
+    category: "Modern",
+    blurb: "Soft coral warmth and modern geometry for a fresh, expressive wedding profile.",
+    swatch: ["#2A1A19", "#EFAE7D", "#FFF7F2"],
+    previewImage: `/My_Biodata3.png`,
+  },
+  {
+    id: "emerald-heritage",
+    name: "Emerald Heritage",
+    category: "Modern",
+    blurb: "A calm green, heritage-inspired structure with a polished, contemporary finish.",
+    swatch: ["#173F3A", "#9DC9B0", "#F3F9F6"],
+    previewImage: `/My_Biodata4.png`,
+  },
+  {
+    id: "pearl-luxe",
+    name: "Pearl Luxe",
+    category: "Minimal",
+    blurb: "Minimal, airy spacing and cool neutrals for a clean luxury statement.",
+    swatch: ["#273043", "#D7DDE8", "#F7F8FA"],
+    previewImage: `/My_Biodata5.png`,
+  },
+  {
+    id: "saffron-legacy",
+    name: "Saffron Legacy",
+    category: "Traditional",
+    blurb: "Golden saffron accents and a classic editorial frame that feels rich and rooted.",
+    swatch: ["#402A1A", "#F0C56A", "#FFF9EE"],
+    previewImage: `/My_Biodata6.png`,
+  },
 ];
 
 export const categories: Array<TemplateMeta["category"] | "All"> = [

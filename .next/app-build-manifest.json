@@ -11,21 +11,16 @@
       "static/css/app/layout.css",
       "static/chunks/app/layout.js"
     ],
-    "/editor/[templateId]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/editor/[templateId]/page.css",
-      "static/chunks/app/editor/[templateId]/page.js"
-    ],
     "/templates/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/templates/page.js"
     ],
-    "/_not-found/page": [
+    "/editor/[templateId]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/css/app/editor/[templateId]/page.css",
+      "static/chunks/app/editor/[templateId]/page.js"
     ]
   }
 }
