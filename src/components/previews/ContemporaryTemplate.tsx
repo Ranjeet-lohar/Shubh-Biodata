@@ -104,8 +104,10 @@ export default function BadgeCertificateTemplate({
         bgcolor: palette.bg,
         overflow: "hidden",
         boxShadow: "0 18px 44px rgba(20,20,20,0.10)",
-        width: "210mm",
-        height: "297mm",
+        width: "100%",
+        maxWidth: "100%",
+        minHeight: 560,
+        aspectRatio: "210 / 297",
         display: "flex",
         flexDirection: "column",
         "@media print": {
@@ -169,7 +171,7 @@ export default function BadgeCertificateTemplate({
         src={data.photoDataUrl || undefined}
         sx={{
           position: "absolute",
-          top: 74 * scale,
+          top: 30 * scale,
           right: 46 * scale,
           width: 104 * scale,
           height: 104 * scale,
