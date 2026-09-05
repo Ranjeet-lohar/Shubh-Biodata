@@ -143,5 +143,4 @@ const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: B
     );
   }
 );
-
 export default TemplatePreview;
