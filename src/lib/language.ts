@@ -4,6 +4,7 @@ type TranslationKey =
   | "Marriage Biodata"
   | "Biodata for Marriage"
   | "Personal Details"
+  | "Additional Details"
   | "Personal"
   | "Education"
   | "Career"
@@ -52,6 +53,7 @@ const hindi: Record<TranslationKey, string> = {
   "Marriage Biodata": "विवाह बायोडाटा",
   "Biodata for Marriage": "विवाह हेतु बायोडाटा",
   "Personal Details": "व्यक्तिगत विवरण",
+  "Additional Details": "अतिरिक्त विवरण",
   Personal: "व्यक्तिगत",
   Education: "शिक्षा",
   Career: "करियर",

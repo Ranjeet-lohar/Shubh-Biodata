@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, ChangeEvent } from "react";
-import { Box, Tabs, Tab, TextField, Grid, MenuItem, Avatar, Button } from "@mui/material";
+import { Box, Tabs, Tab, TextField, Grid, MenuItem, Avatar, Button, Paper, IconButton, Divider } from "@mui/material";
 import { Typography } from "@mui/material";
 import UploadIcon from "@mui/icons-material/CloudUploadOutlined";
+import AddIcon from "@mui/icons-material/AddRounded";
+import EditIcon from "@mui/icons-material/EditOutlined";
+import DeleteIcon from "@mui/icons-material/DeleteOutline";
+import CheckIcon from "@mui/icons-material/CheckRounded";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesomeOutlined";
 import { BiodataFormData } from "@/lib/types";
 
 type Props = {
@@ -12,14 +17,97 @@ type Props = {
 };
 
 const tabs = ["Photo & Personal", "Education & Career", "Family", "Contact & About"];
+type ExtraSection = "personal" | "education" | "family" | "contact";
+
+function CustomDetails({ section, data, onChange }: { section: ExtraSection; data: BiodataFormData; onChange: (data: BiodataFormData) => void }) {
+  const [label, setLabel] = useState("");
+  const [value, setValue] = useState("");
+  const [editingIndex, setEditingIndex] = useState<number | null>(null);
+  const items = data.extras?.[section] || [];
+
+  const reset = () => {
+    setLabel("");
+    setValue("");
+    setEditingIndex(null);
+  };
+
+  const save = () => {
+    if (!label.trim() || !value.trim()) return;
+    const nextItems = [...items];
+    const item = { label: label.trim(), value: value.trim() };
+    if (editingIndex === null) nextItems.push(item);
+    else nextItems[editingIndex] = item;
+    onChange({ ...data, extras: { ...data.extras, [section]: nextItems } });
+    reset();
+  };
+
+  const edit = (index: number) => {
+    setLabel(items[index].label);
+    setValue(items[index].value);
+    setEditingIndex(index);
+  };
+
+  const remove = (index: number) => {
+    onChange({ ...data, extras: { ...data.extras, [section]: items.filter((_, itemIndex) => itemIndex !== index) } });
+    if (editingIndex === index) reset();
+  };
+
+  return (
+    <Paper variant="outlined" sx={{ mt: 3, p: { xs: 1.5, sm: 2 }, borderRadius: 2, borderColor: "rgba(122,32,72,0.18)", bgcolor: "rgba(255,250,246,0.72)" }}>
+      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1, mb: 1.5 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <AutoAwesomeIcon sx={{ color: "secondary.main", fontSize: 19 }} />
+          <Box>
+            <Typography sx={{ fontWeight: 800, fontSize: 13.5 }}>Custom details</Typography>
+            <Typography sx={{ color: "text.secondary", fontSize: 11.5 }}>Add anything this template should show</Typography>
+          </Box>
+        </Box>
+        <Typography sx={{ color: "text.secondary", fontSize: 11 }}>{items.length} added</Typography>
+      </Box>
+      {items.length > 0 && (
+        <Box sx={{ mb: 1.5 }}>
+          {items.map((item, index) => (
+            <Box key={`${item.label}-${index}`} sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 1, py: 0.8, borderTop: index ? "1px solid" : "none", borderColor: "divider" }}>
+              <Box sx={{ minWidth: 0 }}>
+                <Typography sx={{ fontSize: 11, color: "secondary.dark", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.06em" }}>{item.label}</Typography>
+                <Typography sx={{ fontSize: 13, overflow: "hidden", textOverflow: "ellipsis" }}>{item.value}</Typography>
+              </Box>
+              <Box sx={{ display: "flex", flexShrink: 0 }}>
+                <IconButton size="small" aria-label={`Edit ${item.label}`} onClick={() => edit(index)}><EditIcon fontSize="small" /></IconButton>
+                <IconButton size="small" aria-label={`Delete ${item.label}`} onClick={() => remove(index)}><DeleteIcon fontSize="small" /></IconButton>
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      )}
+      <Divider sx={{ mb: 1.5 }} />
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs={12} sm={4}>
+          <TextField fullWidth size="small" label="Label" placeholder="Languages" value={label} onChange={(e) => setLabel(e.target.value)} />
+        </Grid>
+        <Grid item xs={12} sm={5}>
+          <TextField fullWidth size="small" label="Value" placeholder="English, Hindi" value={value} onChange={(e) => setValue(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") save(); }} />
+        </Grid>
+        <Grid item xs={12} sm={3}>
+          <Box sx={{ display: "flex", gap: 0.75 }}>
+            <Button fullWidth size="small" variant="contained" startIcon={editingIndex === null ? <AddIcon /> : <CheckIcon />} onClick={save} disabled={!label.trim() || !value.trim()} sx={{ textTransform: "none" }}>
+              {editingIndex === null ? "Add" : "Save"}
+            </Button>
+            {editingIndex !== null && <Button size="small" onClick={reset} sx={{ minWidth: 0, textTransform: "none" }}>Cancel</Button>}
+          </Box>
+        </Grid>
+      </Grid>
+    </Paper>
+  );
+}
 
 export default function BiodataForm({ data, onChange }: Props) {
   const [tab, setTab] = useState(0);
   const [showAll, setShowAll] = useState(false);
 
-  const set = <K extends keyof BiodataFormData>(section: K, patch: Partial<BiodataFormData[K]>) => {
+  function set<K extends keyof BiodataFormData>(section: K, patch: Partial<BiodataFormData[K]>) {
     onChange({ ...data, [section]: { ...(data[section] as any), ...patch } });
-  };
+  }
 
   const onPhoto = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -31,20 +119,27 @@ export default function BiodataForm({ data, onChange }: Props) {
 
   return (
     <Box>
-    
+      <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", mb: 2.5, gap: 2 }}>
+        <Box>
+          <Typography sx={{ fontSize: 20, fontWeight: 800, letterSpacing: "-0.02em" }}>Build your biodata</Typography>
+          <Typography sx={{ color: "text.secondary", fontSize: 13, mt: 0.3 }}>Fill the essentials, then add personal touches below.</Typography>
+        </Box>
+        <Typography sx={{ color: "secondary.dark", fontSize: 12, fontWeight: 700, whiteSpace: "nowrap" }}>Step {tab + 1} of {tabs.length}</Typography>
+      </Box>
       <Tabs
         value={tab}
         onChange={(_, v) => setTab(v)}
         variant="scrollable"
         scrollButtons="auto"
-        sx={{ mb: 3, borderBottom: "1px solid", borderColor: "divider" }}
+        sx={{ mb: 3, borderBottom: "1px solid", borderColor: "divider", "& .MuiTabs-indicator": { height: 3, borderRadius: 3 } }}
       >
-        {tabs.map((t) => (
-          <Tab key={t} label={t} sx={{ fontSize: 13, textTransform: "none", fontWeight: 600 }} />
+        {tabs.map((t, index) => (
+          <Tab key={t} label={<Box component="span" sx={{ display: "flex", alignItems: "center", gap: 0.7 }}><Box component="span" sx={{ width: 20, height: 20, borderRadius: "50%", bgcolor: tab === index ? "primary.main" : "rgba(122,32,72,0.08)", color: tab === index ? "#fff" : "primary.main", display: "grid", placeItems: "center", fontSize: 10, fontWeight: 800 }}>{index + 1}</Box>{t}</Box>} sx={{ fontSize: 12.5, textTransform: "none", fontWeight: 700, minHeight: 48 }} />
         ))}
       </Tabs>
 
       {tab === 0 && (
+        <Box>
         <Grid container spacing={2}>
           <Grid item xs={12} sx={{ display: "flex", alignItems: "center", gap: 2 }}>
             <Avatar src={data.photoDataUrl || undefined} variant="rounded" sx={{ width: 64, height: 80 }} />
@@ -178,9 +273,12 @@ export default function BiodataForm({ data, onChange }: Props) {
             />
           </Grid>
         </Grid>
+        <CustomDetails section="personal" data={data} onChange={onChange} />
+        </Box>
       )}
 
       {tab === 1 && (
+        <Box>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -211,9 +309,12 @@ export default function BiodataForm({ data, onChange }: Props) {
             />
           </Grid>
         </Grid>
+        <CustomDetails section="education" data={data} onChange={onChange} />
+        </Box>
       )}
 
       {tab === 2 && (
+        <Box>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>
             <TextField
@@ -287,9 +388,12 @@ export default function BiodataForm({ data, onChange }: Props) {
             />
           </Grid>
         </Grid>
+        <CustomDetails section="family" data={data} onChange={onChange} />
+        </Box>
       )}
 
       {tab === 3 && (
+        <Box>
         <Grid container spacing={2}>
           <Grid item xs={12}>
             <TextField
@@ -342,6 +446,8 @@ export default function BiodataForm({ data, onChange }: Props) {
             />
           </Grid>
         </Grid>
+        <CustomDetails section="contact" data={data} onChange={onChange} />
+        </Box>
       )}
     </Box>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { forwardRef, useEffect, useRef } from "react";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { BiodataFormData } from "@/lib/types";
 import TraditionalTemplate from "./TraditionalTemplate";
 import RoyalTemplate from "./RoyalTemplate";
@@ -11,6 +11,39 @@ import ElegantTemplate from "./ElegantTemplate";
 import MonogramTemplate from "./MonogramTemplate";
 import ContemporaryTemplate from "./ContemporaryTemplate";
 import { DocumentLanguage, translate } from "@/lib/language";
+
+function CustomDetailsPreview({ data, language }: { data: BiodataFormData; language: DocumentLanguage }) {
+  const sections = [
+    ...(data.extras?.personal || []),
+    ...(data.extras?.education || []),
+    ...(data.extras?.family || []),
+    ...(data.extras?.contact || []),
+  ];
+
+  if (sections.length === 0) return null;
+
+  return (
+    <Box sx={{ mx: 3, mb: 3, p: 2.5, border: "1px solid #E4D6BE", bgcolor: "#FFFCF7", breakInside: "avoid" }}>
+      <Box sx={{ mb: 1.5, pb: 0.8, borderBottom: "2px solid #C6952F" }}>
+        <Typography sx={{ fontSize: 14, fontWeight: 800, color: "#7A2048", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+          {translate("Additional Details", language)}
+        </Typography>
+      </Box>
+      <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 1.5 }}>
+        {sections.map((item, index) => (
+          <Box key={`${item.label}-${index}`} sx={{ minWidth: 0 }}>
+            <Typography sx={{ fontSize: 9, fontWeight: 800, color: "#8F6A3B", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+              {item.label}
+            </Typography>
+            <Typography sx={{ mt: 0.25, fontSize: 12, color: "#241A14", overflowWrap: "anywhere" }}>
+              {item.value}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+}
 
 const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: BiodataFormData; language?: DocumentLanguage }>(
   function TemplatePreview({ templateId, data, language = "en" }, ref) {
@@ -103,6 +136,7 @@ const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: B
         }}
       >
         {content}
+        <CustomDetailsPreview data={data} language={language} />
       </Box>
     );
   }
