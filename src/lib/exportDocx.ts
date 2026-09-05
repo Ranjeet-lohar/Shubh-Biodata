@@ -1,6 +1,7 @@
 import { Document, Packer, Paragraph, TextRun, HeadingLevel, Table, TableRow, TableCell, WidthType, BorderStyle } from "docx";
 import { saveAs } from "file-saver";
 import { BiodataFormData } from "./types";
+import { DocumentLanguage, translate } from "./language";
 
 const WINE = "7A2048";
 const GOLD = "C99A3E";
@@ -44,50 +45,51 @@ function factTable(rows: [string, string][]) {
   });
 }
 
-export async function exportBiodataToDocx(data: BiodataFormData, filename: string) {
+export async function exportBiodataToDocx(data: BiodataFormData, filename: string, language: DocumentLanguage = "en") {
+  const label = (text: string) => translate(text, language);
   const personalRows: [string, string][] = [
-    ["Date of Birth", data.personal.dob],
-    ["Time of Birth", data.personal.timeOfBirth],
-    ["Place of Birth", data.personal.placeOfBirth],
-    ["Height", data.personal.height],
-    ["Weight", data.personal.weight],
-    ["Complexion", data.personal.complexion],
-    ["Blood Group", data.personal.bloodGroup],
-    ["Marital Status", data.personal.maritalStatus],
-    ["Religion", data.personal.religion],
-    ["Caste", data.personal.caste],
-    ["Gothra", data.personal.gothra],
-    ["Manglik", data.personal.manglik],
-    ["Diet", data.personal.diet],
+    [label("Date of Birth"), data.personal.dob],
+    [label("Time of Birth"), data.personal.timeOfBirth],
+    [label("Place of Birth"), data.personal.placeOfBirth],
+    [label("Height"), data.personal.height],
+    [label("Weight"), data.personal.weight],
+    [label("Complexion"), data.personal.complexion],
+    [label("Blood Group"), data.personal.bloodGroup],
+    [label("Marital Status"), data.personal.maritalStatus],
+    [label("Religion"), data.personal.religion],
+    [label("Caste"), data.personal.caste],
+    [label("Gothra"), data.personal.gothra],
+    [label("Manglik"), data.personal.manglik],
+    [label("Diet"), data.personal.diet],
     ...((data.extras?.personal || []).map((e): [string, string] => [e.label || "", e.value || ""])),
   ];
 
   const educationRows: [string, string][] = [
-    ["Qualification", data.education.qualification],
-    ["Occupation", data.education.occupation],
-    ["Company / Organisation", data.education.company],
-    ["Annual Income", data.education.income],
+    [label("Qualification"), data.education.qualification],
+    [label("Occupation"), data.education.occupation],
+    [label("Company / Organisation"), data.education.company],
+    [label("Annual Income"), data.education.income],
     ...((data.extras?.education || []).map((e): [string, string] => [e.label || "", e.value || ""])),
   ];
 
   const familyRows: [string, string][] = [
-    ["Father's Name", data.family.fatherName],
-    ["Father's Occupation", data.family.fatherOccupation],
-    ["Mother's Name", data.family.motherName],
-    ["Mother's Occupation", data.family.motherOccupation],
-    ["Siblings", data.family.siblings],
-    ["Family Type", data.family.familyType],
-    ["Family Values", data.family.familyValues],
-    ["Native Place", data.family.nativePlace],
+    [label("Father's Name"), data.family.fatherName],
+    [label("Father's Occupation"), data.family.fatherOccupation],
+    [label("Mother's Name"), data.family.motherName],
+    [label("Mother's Occupation"), data.family.motherOccupation],
+    [label("Siblings"), data.family.siblings],
+    [label("Family Type"), data.family.familyType],
+    [label("Family Values"), data.family.familyValues],
+    [label("Native Place"), data.family.nativePlace],
     ...((data.extras?.family || []).map((e): [string, string] => [e.label || "", e.value || ""])),
   ];
 
   const contactRows: [string, string][] = [
-    ["Address", data.contact.address],
-    ["City", data.contact.city],
-    ["Phone", data.contact.phone],
-    ["Email", data.contact.email],
-    ["Contact Person", data.contact.contactPerson],
+    [label("Address"), data.contact.address],
+    [label("City"), data.contact.city],
+    [label("Phone"), data.contact.phone],
+    [label("Email"), data.contact.email],
+    [label("Contact Person"), data.contact.contactPerson],
     ...((data.extras?.contact || []).map((e): [string, string] => [e.label || "", e.value || ""])),
   ];
 
@@ -99,31 +101,31 @@ export async function exportBiodataToDocx(data: BiodataFormData, filename: strin
           new Paragraph({
             alignment: "center",
             spacing: { after: 100 },
-            children: [
-              new TextRun({ text: data.personal.fullName || "Marriage Biodata", bold: true, size: 40, color: WINE }),
+              children: [
+              new TextRun({ text: data.personal.fullName || label("Marriage Biodata"), bold: true, size: 40, color: WINE }),
             ],
           }),
           new Paragraph({
             alignment: "center",
             spacing: { after: 300 },
-            children: [new TextRun({ text: "Biodata for Marriage", italics: true, color: "6E5A61" })],
+              children: [new TextRun({ text: label("Biodata for Marriage"), italics: true, color: "6E5A61" })],
           }),
 
-          sectionHeading("Personal Details"),
+          sectionHeading(label("Personal Details")),
           factTable(personalRows),
 
-          sectionHeading("Education & Career"),
+          sectionHeading(label("Education & Career")),
           factTable(educationRows),
 
-          sectionHeading("Family Details"),
+          sectionHeading(label("Family Details")),
           factTable(familyRows),
 
-          sectionHeading("Contact Details"),
+          sectionHeading(label("Contact Details")),
           factTable(contactRows),
 
           ...(data.about
             ? [
-                sectionHeading("About Me"),
+                sectionHeading(label("About Me")),
                 new Paragraph({ children: [new TextRun({ text: data.about })] }),
               ]
             : []),

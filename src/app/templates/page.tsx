@@ -18,7 +18,7 @@ function TemplatesInner() {
   const [category, setCategory] = useState<TemplateMeta["category"] | "All">(initialCategory);
   const [query, setQuery] = useState("");
 
-  const featured = useMemo(() => templates.slice(0, 4), []);
+  const featured = useMemo(() => templates, []);
 
   const filtered = useMemo(() => {
     return templates.filter((t) => {
@@ -61,7 +61,7 @@ function TemplatesInner() {
               borderTop: "1px solid",
               borderColor: "divider",
             }}
-          >
+           >
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
               {categories.map((c) => (
                 <Chip

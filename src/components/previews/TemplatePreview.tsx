@@ -1,6 +1,6 @@
 "use client";
 
-import { forwardRef } from "react";
+import { forwardRef, useEffect, useRef } from "react";
 import { Box } from "@mui/material";
 import { BiodataFormData } from "@/lib/types";
 import TraditionalTemplate from "./TraditionalTemplate";
@@ -10,9 +10,29 @@ import MinimalTemplate from "./MinimalTemplate";
 import ElegantTemplate from "./ElegantTemplate";
 import MonogramTemplate from "./MonogramTemplate";
 import ContemporaryTemplate from "./ContemporaryTemplate";
+import { DocumentLanguage, translate } from "@/lib/language";
 
-const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: BiodataFormData }>(
-  function TemplatePreview({ templateId, data }, ref) {
+const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: BiodataFormData; language?: DocumentLanguage }>(
+  function TemplatePreview({ templateId, data, language = "en" }, ref) {
+    const previewRootRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+      if (language !== "hi" || !previewRootRef.current) return;
+      const walker = document.createTreeWalker(previewRootRef.current, NodeFilter.SHOW_TEXT);
+      let current = walker.nextNode();
+      while (current) {
+        const text = current.textContent?.trim() || "";
+        if (text) current.textContent = current.textContent?.replace(text, translate(text, language)) || "";
+        current = walker.nextNode();
+      }
+    }, [data, language, templateId]);
+
+    const setPreviewRef = (node: HTMLDivElement | null) => {
+      previewRootRef.current = node;
+      if (typeof ref === "function") ref(node);
+      else if (ref) ref.current = node;
+    };
+
     let content: React.ReactNode;
 
     switch (templateId) {
@@ -55,13 +75,19 @@ const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: B
       case "saffron-legacy":
         content = <ContemporaryTemplate data={data} variant="copper" />;
         break;
+      case "indigo-pavilion":
+        content = <ContemporaryTemplate data={data} variant="indigo" />;
+        break;
+      case "terracotta-jharokha":
+        content = <ContemporaryTemplate data={data} variant="terracotta" />;
+        break;
       default:
         content = <TraditionalTemplate data={data} variant="wine" />;
     }
 
     return (
       <Box
-        ref={ref}
+        ref={setPreviewRef}
         sx={{
           width: 554, // A4 @ 96dpi width for a larger, crisper live preview
           maxWidth: "554px",

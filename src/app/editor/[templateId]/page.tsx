@@ -14,6 +14,8 @@ import {
   Alert,
   Drawer,
   IconButton,
+  Select,
+  MenuItem,
   useMediaQuery,
 } from "@mui/material";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdfOutlined";
@@ -28,6 +30,7 @@ import { emptyBiodata } from "@/lib/types";
 import { getTemplate, templates } from "@/lib/templates";
 import { exportNodeToPdf } from "@/lib/exportPdf";
 import { exportBiodataToDocx } from "@/lib/exportDocx";
+import { DocumentLanguage } from "@/lib/language";
 
 // ---- Design tokens -------------------------------------------------------
 // A wedding-card palette: ivory card stock, deep sindoor maroon, marigold
@@ -114,6 +117,7 @@ export default function EditorPage() {
   const [toast, setToast] = useState<string | null>(null);
   const [switcherOpen, setSwitcherOpen] = useState(false);
   const [mobilePreviewOpen, setMobilePreviewOpen] = useState(false);
+  const [language, setLanguage] = useState<DocumentLanguage>("en");
   const previewRef = useRef<HTMLDivElement>(null);
   const isMobile = useMediaQuery("(max-width:900px)");
 
@@ -126,7 +130,7 @@ export default function EditorPage() {
     if (!previewRef.current) return;
     setExporting("pdf");
     try {
-      await exportNodeToPdf(previewRef.current, `${fileBase}.pdf`);
+      await exportNodeToPdf(previewRef.current, `${fileBase}_${language}.pdf`, language);
       setToast("Your PDF is ready.");
     } catch {
       setToast("Couldn't generate the PDF — please try again.");
@@ -138,7 +142,7 @@ export default function EditorPage() {
   const handleDocx = async () => {
     setExporting("docx");
     try {
-      await exportBiodataToDocx(data, `${fileBase}.docx`);
+      await exportBiodataToDocx(data, `${fileBase}_${language}.docx`, language);
       setToast("Your Word file is ready.");
     } catch {
       setToast("Couldn't generate the Word file — please try again.");
@@ -209,6 +213,16 @@ export default function EditorPage() {
             </Box>
 
             <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+              <Select
+                size="small"
+                value={language}
+                onChange={(event) => setLanguage(event.target.value as DocumentLanguage)}
+                sx={{ minWidth: 118, ...outlinedBtnSx }}
+                aria-label="Document language"
+              >
+                <MenuItem value="en">English</MenuItem>
+                <MenuItem value="hi">हिन्दी</MenuItem>
+              </Select>
               <Button size="small" variant="outlined" startIcon={<SwapHorizIcon />} onClick={() => setSwitcherOpen(true)} sx={outlinedBtnSx}>
                 Change template
               </Button>
@@ -284,7 +298,7 @@ export default function EditorPage() {
                 </Box>
                
                   <Box sx={{ transform: "scale(0.78)", transformOrigin: "top left", width: 554, maxWidth: "554px" }}>
-                    <TemplatePreview ref={previewRef} templateId={template.id} data={data} />
+                    <TemplatePreview key={`${template.id}-${language}`} ref={previewRef} templateId={template.id} data={data} language={language} />
                   </Box>
                 
               </Box>
@@ -296,7 +310,7 @@ export default function EditorPage() {
       {/* Hidden full-scale node for accurate PDF capture on mobile scaled/hidden */}
       {isMobile && (
         <Box sx={{ position: "fixed", left: -9999, top: 0 }}>
-          <TemplatePreview ref={previewRef} templateId={template.id} data={data} />
+            <TemplatePreview key={`${template.id}-${language}`} ref={previewRef} templateId={template.id} data={data} language={language} />
         </Box>
       )}
 
@@ -308,7 +322,7 @@ export default function EditorPage() {
             </IconButton>
           </Box>
           <Box sx={{ transform: "scale(0.85)", transformOrigin: "top center" }}>
-            <TemplatePreview templateId={template.id} data={data} />
+            <TemplatePreview key={`${template.id}-${language}`} templateId={template.id} data={data} language={language} />
           </Box>
         </Box>
       </Drawer>

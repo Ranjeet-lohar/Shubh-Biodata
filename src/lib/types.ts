@@ -9,6 +9,7 @@ export type TemplateCategory =
   | "Floral";
 
 export interface TemplateMeta {
+  badge?: ReactNode;
   previewImage: string | StaticImport;
   id: string;
   name: string;

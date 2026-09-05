@@ -107,6 +107,22 @@ export const templates: TemplateMeta[] = [
     swatch: ["#402A1A", "#F0C56A", "#FFF9EE"],
     previewImage: `/My_Biodata6.png`,
   },
+  {
+    id: "indigo-pavilion",
+    name: "Indigo Pavilion",
+    category: "Royal",
+    blurb: "A deep indigo frame with cool blue detailing for a composed, contemporary celebration.",
+    swatch: ["#202B57", "#7185C5", "#F8F9FF"],
+    previewImage: `/My_Biodata7.png`,
+  },
+  {
+    id: "terracotta-jharokha",
+    name: "Terracotta Jharokha",
+    category: "Traditional",
+    blurb: "Warm terracotta accents and crafted border details inspired by a sunlit haveli window.",
+    swatch: ["#713B2D", "#C77B58", "#FFF8F2"],
+    previewImage: `/My_Biodata1.png`,
+  },
 ];
 
 export const categories: Array<TemplateMeta["category"] | "All"> = [

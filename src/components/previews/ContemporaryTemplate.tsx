@@ -67,7 +67,7 @@ export default function BadgeCertificateTemplate({
   variant = "gold",
 }: {
   data: BiodataFormData;
-  variant?: "gold" | "rose" | "teal" | "navy" | "copper";
+  variant?: "gold" | "rose" | "teal" | "navy" | "copper" | "indigo" | "terracotta";
 }) {
   const paletteMap = {
     gold: { accent: "#8F6A3B", accent2: "#C7A96C", bg: "#FFFEFC", frame: "#D7C29B" },
@@ -75,6 +75,8 @@ export default function BadgeCertificateTemplate({
     teal: { accent: "#1E5E52", accent2: "#4FA98C", bg: "#FBFFFD", frame: "#B9DDCF" },
     navy: { accent: "#28345A", accent2: "#5A6FB0", bg: "#FBFBFF", frame: "#C4CBE6" },
     copper: { accent: "#A76B1A", accent2: "#D89A3F", bg: "#FFFDF8", frame: "#EAD3A0" },
+    indigo: { accent: "#202B57", accent2: "#7185C5", bg: "#F8F9FF", frame: "#C5CDEA" },
+    terracotta: { accent: "#713B2D", accent2: "#C77B58", bg: "#FFF8F2", frame: "#E7B9A4" },
   } as const;
 
   const palette = paletteMap[variant] ?? paletteMap.gold;
