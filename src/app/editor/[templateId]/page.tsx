@@ -320,7 +320,7 @@ export default function EditorPage() {
                       "&::-webkit-scrollbar": { height: 4 },
                       "&::-webkit-scrollbar-thumb": { bgcolor: GOLD, borderRadius: 4 },
                     }}
-                  >
+                   >
                     {templates.map((item) => {
                       const active = item.id === template.id;
                       return (

@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   title: "Shubh Biodata — Create Free Marriage Biodata Online | PDF & Word",
   description:
     "Design your marriage biodata online for free. Choose from elegant templates, fill your details, and download instantly as PDF or Word. Bilingual Hindi & English support.",
+  icons: {
+    icon: "/favicon.png",
+  },
   keywords: [
     "marriage biodata maker",
     "free biodata format",
