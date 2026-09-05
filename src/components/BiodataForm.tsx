@@ -58,7 +58,7 @@ function CustomDetails({ section, data, onChange }: { section: ExtraSection; dat
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <AutoAwesomeIcon sx={{ color: "secondary.main", fontSize: 19 }} />
           <Box>
-            <Typography sx={{ fontWeight: 800, fontSize: 13.5 }}>Custom details</Typography>
+            <Typography sx={{ fontWeight: 800, fontSize: 13.5 }}>Additional Details</Typography>
             <Typography sx={{ color: "text.secondary", fontSize: 11.5 }}>Add anything this template should show</Typography>
           </Box>
         </Box>

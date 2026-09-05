@@ -296,11 +296,73 @@ export default function EditorPage() {
                   <EyebrowLabel>Live preview</EyebrowLabel>
                   <Box sx={{ width: 5, height: 5, borderRadius: "50%", bgcolor: MEHENDI }} />
                 </Box>
-               
-                  <Box sx={{ transform: "scale(0.78)", transformOrigin: "top left", width: 554, maxWidth: "554px" }}>
-                    <TemplatePreview key={`${template.id}-${language}`} ref={previewRef} templateId={template.id} data={data} language={language} />
+
+                <Paper
+                  variant="outlined"
+                  sx={{
+                    mb: 2,
+                    p: 1.25,
+                    borderRadius: 2,
+                    borderColor: LINE,
+                    bgcolor: "rgba(255,255,255,0.78)",
+                  }}
+                 >
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 800, color: INK }}>Design browser</Typography>
+                    <Typography sx={{ fontSize: 10.5, color: "text.secondary" }}>{templates.length} styles</Typography>
                   </Box>
-                
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      overflowX: "auto",
+                      pb: 0.5,
+                      "&::-webkit-scrollbar": { height: 4 },
+                      "&::-webkit-scrollbar-thumb": { bgcolor: GOLD, borderRadius: 4 },
+                    }}
+                  >
+                    {templates.map((item) => {
+                      const active = item.id === template.id;
+                      return (
+                        <Box
+                          key={item.id}
+                          component="button"
+                          type="button"
+                          onClick={() => router.push(`/editor/${item.id}`)}
+                          aria-label={`Use ${item.name} template`}
+                          sx={{
+                            minWidth: 92,
+                            p: 0.7,
+                            border: "1px solid",
+                            borderColor: active ? MAROON : LINE,
+                            borderRadius: 1.5,
+                            bgcolor: active ? "rgba(140,42,56,0.07)" : "#fff",
+                            textAlign: "left",
+                            cursor: "pointer",
+                            transition: "transform 160ms ease, border-color 160ms ease",
+                            "&:hover": { transform: "translateY(-2px)", borderColor: GOLD },
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              height: 42,
+                              mb: 0.6,
+                              borderRadius: 0.75,
+                              border: `3px solid ${item.swatch[0]}`,
+                              background: `linear-gradient(135deg, ${item.swatch[0]} 0 34%, ${item.swatch[1]} 34% 52%, ${item.swatch[2]} 52%)`,
+                            }}
+                          />
+                          <Typography noWrap sx={{ fontSize: 10.5, fontWeight: 800, color: INK }}>{item.name}</Typography>
+                          <Typography noWrap sx={{ fontSize: 9.5, color: "text.secondary" }}>{item.category}</Typography>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                </Paper>
+
+                <Box sx={{ transform: "scale(0.78)", transformOrigin: "top left", width: 554, maxWidth: "554px" }}>
+                  <TemplatePreview key={`${template.id}-${language}`} ref={previewRef} templateId={template.id} data={data} language={language} />
+                </Box>
               </Box>
             )}
           </Box>

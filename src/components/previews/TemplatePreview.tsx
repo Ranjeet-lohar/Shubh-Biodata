@@ -135,8 +135,10 @@ const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: B
           },
         }}
       >
-        {content}
-        <CustomDetailsPreview data={data} language={language} />
+        <div>
+          {content}
+          <CustomDetailsPreview data={data} language={language} />
+        </div>
       </Box>
     );
   }
