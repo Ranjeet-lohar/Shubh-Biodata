@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, useEffect } from "react";
+import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Fraunces, Manrope } from "next/font/google";
@@ -163,6 +163,38 @@ export default function EditorPage() {
     "&:hover": { borderColor: GOLD, bgcolor: "rgba(198,149,47,0.08)" },
   };
 
+
+// ...inside component, alongside your other refs/state:
+const scrollerRef = useRef<HTMLDivElement>(null);
+const dragState = useRef({ isDown: false, startX: 0, startScroll: 0, moved: false });
+
+const onMouseDown = useCallback((e: React.MouseEvent) => {
+  const el = scrollerRef.current;
+  if (!el) return;
+  dragState.current = {
+    isDown: true,
+    startX: e.pageX - el.offsetLeft,
+    startScroll: el.scrollLeft,
+    moved: false,
+  };
+}, []);
+
+const onMouseMove = useCallback((e: React.MouseEvent) => {
+  const el = scrollerRef.current;
+  if (!el || !dragState.current.isDown) return;
+  e.preventDefault();
+  const x = e.pageX - el.offsetLeft;
+  const walk = x - dragState.current.startX;
+  if (Math.abs(walk) > 4) dragState.current.moved = true; // treat as drag, not click
+  el.scrollLeft = dragState.current.startScroll - walk;
+}, []);
+
+const endDrag = useCallback(() => {
+  dragState.current.isDown = false;
+}, []);
+
+// use on each template button's onClick:
+// onClick={() => { if (!dragState.current.moved) router.push(`/editor/${item.id}`); }}
   return (
     <Box
       className={`${display.variable} ${body.variable}`}
@@ -298,67 +330,80 @@ export default function EditorPage() {
                 </Box>
 
                 <Paper
-                  variant="outlined"
-                  sx={{
-                    mb: 2,
-                    p: 1.25,
-                    borderRadius: 2,
-                    borderColor: LINE,
-                    bgcolor: "rgba(255,255,255,0.78)",
-                  }}
-                 >
-                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
-                    <Typography sx={{ fontSize: 12, fontWeight: 800, color: INK }}>Design browser</Typography>
-                    <Typography sx={{ fontSize: 10.5, color: "text.secondary" }}>{templates.length} styles</Typography>
-                  </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: 1,
-                      overflowX: "auto",
-                      pb: 0.5,
-                      "&::-webkit-scrollbar": { height: 4 },
-                      "&::-webkit-scrollbar-thumb": { bgcolor: GOLD, borderRadius: 4 },
-                    }}
-                   >
-                    {templates.map((item) => {
-                      const active = item.id === template.id;
-                      return (
-                        <Box
-                          key={item.id}
-                          component="button"
-                          type="button"
-                          onClick={() => router.push(`/editor/${item.id}`)}
-                          aria-label={`Use ${item.name} template`}
-                          sx={{
-                            minWidth: 92,
-                            p: 0.7,
-                            border: "1px solid",
-                            borderColor: active ? MAROON : LINE,
-                            borderRadius: 1.5,
-                            bgcolor: active ? "rgba(140,42,56,0.07)" : "#fff",
-                            textAlign: "left",
-                            cursor: "pointer",
-                            transition: "transform 160ms ease, border-color 160ms ease",
-                            "&:hover": { transform: "translateY(-2px)", borderColor: GOLD },
-                          }}
-                        >
-                          <Box
-                            sx={{
-                              height: 42,
-                              mb: 0.6,
-                              borderRadius: 0.75,
-                              border: `3px solid ${item.swatch[0]}`,
-                              background: `linear-gradient(135deg, ${item.swatch[0]} 0 34%, ${item.swatch[1]} 34% 52%, ${item.swatch[2]} 52%)`,
-                            }}
-                          />
-                          <Typography noWrap sx={{ fontSize: 10.5, fontWeight: 800, color: INK }}>{item.name}</Typography>
-                          <Typography noWrap sx={{ fontSize: 9.5, color: "text.secondary" }}>{item.category}</Typography>
-                        </Box>
-                      );
-                    })}
-                  </Box>
-                </Paper>
+  variant="outlined"
+  sx={{
+    mb: 2,
+    p: 1.25,
+    borderRadius: 2,
+    borderColor: LINE,
+    bgcolor: "rgba(255,255,255,0.78)",
+  }}
+>
+  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+    <Typography sx={{ fontSize: 12, fontWeight: 800, color: INK }}>Design browser</Typography>
+    <Typography sx={{ fontSize: 10.5, color: "text.secondary" }}>{templates.length} styles</Typography>
+  </Box>
+  <Box
+    ref={scrollerRef}
+    onMouseDown={onMouseDown}
+    onMouseMove={onMouseMove}
+    onMouseUp={endDrag}
+    onMouseLeave={endDrag}
+    sx={{
+      display: "flex",
+      gap: 1,
+      overflowX: "auto",
+      pb: 0.5,
+      cursor: "grab",
+      userSelect: "none",
+      scrollBehavior: dragState.current.isDown ? "auto" : "smooth",
+      "&:active": { cursor: "grabbing" },
+      "&::-webkit-scrollbar": { height: 4 },
+      "&::-webkit-scrollbar-thumb": { bgcolor: GOLD, borderRadius: 4 },
+    }}
+  >
+    {templates.map((item) => {
+      const active = item.id === template.id;
+      return (
+        <Box
+          key={item.id}
+          component="button"
+          type="button"
+          onClick={() => {
+            if (dragState.current.moved) return; // suppress click after a drag
+            router.push(`/editor/${item.id}`);
+          }}
+          aria-label={`Use ${item.name} template`}
+          sx={{
+            minWidth: 92,
+            p: 0.7,
+            border: "1px solid",
+            borderColor: active ? MAROON : LINE,
+            borderRadius: 1.5,
+            bgcolor: active ? "rgba(140,42,56,0.07)" : "#fff",
+            textAlign: "left",
+            cursor: "pointer",
+            transition: "transform 160ms ease, border-color 160ms ease",
+            "&:hover": { transform: "translateY(-2px)", borderColor: GOLD },
+          }}
+        >
+          <Box
+            sx={{
+              height: 42,
+              mb: 0.6,
+              borderRadius: 0.75,
+              border: `3px solid ${item.swatch[0]}`,
+              background: `linear-gradient(135deg, ${item.swatch[0]} 0 34%, ${item.swatch[1]} 34% 52%, ${item.swatch[2]} 52%)`,
+              pointerEvents: "none", // prevent img/box from swallowing drag events
+            }}
+          />
+          <Typography noWrap sx={{ fontSize: 10.5, fontWeight: 800, color: INK }}>{item.name}</Typography>
+          <Typography noWrap sx={{ fontSize: 9.5, color: "text.secondary" }}>{item.category}</Typography>
+        </Box>
+      );
+    })}
+  </Box>
+</Paper>
 
                 <Box sx={{ transform: "scale(0.78)", transformOrigin: "top left", width: 554, maxWidth: "554px" }}>
                   <TemplatePreview key={`${template.id}-${language}`} ref={previewRef} templateId={template.id} data={data} language={language} />

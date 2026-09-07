@@ -2,6 +2,7 @@
 
 import { Box, Typography, Avatar, Grid } from "@mui/material";
 import { BiodataFormData } from "@/lib/types";
+import AdditionalDetailsSection from "./AdditionalDetailsSection";
 
 // ---- Design tokens (shared across all templates) -------------------------
 const INK = "#241A14";
@@ -164,6 +165,8 @@ export default function RoyalTemplate({ data }: { data: BiodataFormData }) {
             </Typography>
           </Box>
         )}
+
+        <AdditionalDetailsSection data={data} accent={GOLD} text={INK} muted={INK} border={LINE}  />
       </Box>
     </Box>
   );

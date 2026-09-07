@@ -12,39 +12,6 @@ import MonogramTemplate from "./MonogramTemplate";
 import ContemporaryTemplate from "./ContemporaryTemplate";
 import { DocumentLanguage, translate } from "@/lib/language";
 
-function CustomDetailsPreview({ data, language }: { data: BiodataFormData; language: DocumentLanguage }) {
-  const sections = [
-    ...(data.extras?.personal || []),
-    ...(data.extras?.education || []),
-    ...(data.extras?.family || []),
-    ...(data.extras?.contact || []),
-  ];
-
-  if (sections.length === 0) return null;
-
-  return (
-    <Box sx={{ mx: 3, mb: 3, p: 2.5, border: "1px solid #E4D6BE", bgcolor: "#FFFCF7", breakInside: "avoid" }}>
-      <Box sx={{ mb: 1.5, pb: 0.8, borderBottom: "2px solid #C6952F" }}>
-        <Typography sx={{ fontSize: 14, fontWeight: 800, color: "#7A2048", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-          {translate("Additional Details", language)}
-        </Typography>
-      </Box>
-      <Box sx={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: 1.5 }}>
-        {sections.map((item, index) => (
-          <Box key={`${item.label}-${index}`} sx={{ minWidth: 0 }}>
-            <Typography sx={{ fontSize: 9, fontWeight: 800, color: "#8F6A3B", textTransform: "uppercase", letterSpacing: "0.08em" }}>
-              {item.label}
-            </Typography>
-            <Typography sx={{ mt: 0.25, fontSize: 12, color: "#241A14", overflowWrap: "anywhere" }}>
-              {item.value}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
-    </Box>
-  );
-}
-
 const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: BiodataFormData; language?: DocumentLanguage }>(
   function TemplatePreview({ templateId, data, language = "en" }, ref) {
     const previewRootRef = useRef<HTMLDivElement>(null);
@@ -94,25 +61,25 @@ const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: B
         content = <MinimalTemplate data={data} />;
         break;
       case "classic-contemporary":
-        content = <ContemporaryTemplate data={data} variant="gold" />;
+        content = <ContemporaryTemplate data={data} variant="gold" layout="classic" />;
         break;
       case "sunset-atelier":
-        content = <ContemporaryTemplate data={data} variant="rose" />;
+        content = <ContemporaryTemplate data={data} variant="rose" layout="atelier" />;
         break;
       case "emerald-heritage":
-        content = <ContemporaryTemplate data={data} variant="teal" />;
+        content = <ContemporaryTemplate data={data} variant="teal" layout="heritage" />;
         break;
       case "pearl-luxe":
-        content = <ContemporaryTemplate data={data} variant="navy" />;
+        content = <ContemporaryTemplate data={data} variant="navy" layout="luxe" />;
         break;
       case "saffron-legacy":
-        content = <ContemporaryTemplate data={data} variant="copper" />;
+        content = <ContemporaryTemplate data={data} variant="copper" layout="legacy" />;
         break;
       case "indigo-pavilion":
-        content = <ContemporaryTemplate data={data} variant="indigo" />;
+        content = <ContemporaryTemplate data={data} variant="indigo" layout="pavilion" />;
         break;
       case "terracotta-jharokha":
-        content = <ContemporaryTemplate data={data} variant="terracotta" />;
+        content = <ContemporaryTemplate data={data} variant="terracotta" layout="jharokha" />;
         break;
       default:
         content = <TraditionalTemplate data={data} variant="wine" />;
@@ -135,10 +102,7 @@ const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: B
           },
         }}
       >
-        <div>
-          {content}
-          <CustomDetailsPreview data={data} language={language} />
-        </div>
+        {content}
       </Box>
     );
   }

@@ -2,6 +2,7 @@
 
 import { Box, Typography, Avatar } from "@mui/material";
 import { BiodataFormData } from "@/lib/types";
+import AdditionalDetailsSection from "./AdditionalDetailsSection";
 
 // Side-by-side label/value row, deco-flavored: wide-tracked uppercase
 // labels instead of the softer sentence-case used in the other templates.
@@ -70,7 +71,7 @@ const CORNER_STYLES: React.CSSProperties[] = [
   { bottom: 8, right: 8, transform: "scale(-1,-1)" },
 ];
 
-export default function DecoTemplate({
+export default function MonogramTemplate({
   data,
   variant = "ivory",
 }: {
@@ -208,6 +209,8 @@ export default function DecoTemplate({
           <Typography sx={{ fontSize: 11.5, lineHeight: 1.5, color: ink, fontStyle: "italic" }}>{data.about}</Typography>
         </>
       )}
+
+      <AdditionalDetailsSection data={data} accent={gold} text={ink} muted={muted} border={gold} />
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 1.5 }}>
         <Box sx={{ width: 36, height: "1px", bgcolor: gold, opacity: 0.5 }} />

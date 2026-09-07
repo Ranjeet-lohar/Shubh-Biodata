@@ -2,6 +2,7 @@
 
 import { Box, Typography, Avatar } from "@mui/material";
 import { BiodataFormData } from "@/lib/types";
+import AdditionalDetailsSection from "./AdditionalDetailsSection";
 
 // ---- Design tokens (shared with the editor shell) ------------------------
 const INK = "#241A14";
@@ -229,6 +230,8 @@ export default function MinimalTemplate({ data }: { data: BiodataFormData }) {
           </Box>
         )}
       </Box>
+
+      <AdditionalDetailsSection data={data} accent={GOLD} text={INK} muted={GOLD_SOFT} border={LINE} />
 
       {/* Mirrored foil rule closes the letterhead the way it opened. */}
       <Box

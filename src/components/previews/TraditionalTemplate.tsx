@@ -2,6 +2,7 @@
 
 import { Box, Typography, Avatar } from "@mui/material";
 import { BiodataFormData } from "@/lib/types";
+import AdditionalDetailsSection from "./AdditionalDetailsSection";
 
 // Side-by-side label/value — safe for wide columns (Personal, Education,
 // Contact) where 44%/56% leaves plenty of room for both.
@@ -124,6 +125,7 @@ export default function TraditionalTemplate({
   data: BiodataFormData;
   variant?: "wine" | "floral";
 }) {
+  const isFloral = variant === "floral";
   const border = variant === "wine" ? "#6B1E3C" : "#B85C7D";
   const accent = variant === "wine" ? "#C9A227" : "#7A9B6E";
   const bg = variant === "wine" ? "#FFFCF6" : "#FFF9FA";
@@ -135,13 +137,15 @@ export default function TraditionalTemplate({
         bgcolor: bg,
         border: `1px solid ${accent}66`,
         outline: `8px solid ${bg}`,
-        boxShadow: `0 0 0 1px ${border}, 0 0 0 11px ${bg}, 0 0 0 12px ${border}33`,
+        boxShadow: isFloral ? `0 0 0 1px ${accent}, 0 0 0 11px ${bg}, 0 0 0 12px ${border}33` : `0 0 0 1px ${border}, 0 0 0 11px ${bg}, 0 0 0 12px ${border}33`,
         p: { xs: 3, sm: 3.5 },
         pt: 2.75,
         fontFamily: "var(--font-body)",
         position: "relative",
-        backgroundImage: `radial-gradient(${accent}22 1px, transparent 1px)`,
-        backgroundSize: "16px 16px",
+        backgroundImage: isFloral
+          ? `radial-gradient(${accent}28 1px, transparent 1px), linear-gradient(135deg, transparent 48%, ${border}10 49%, transparent 51%)`
+          : `radial-gradient(${accent}22 1px, transparent 1px)`,
+        backgroundSize: isFloral ? "18px 18px, 26px 26px" : "16px 16px",
         overflow: "hidden",
         // --- Print: pinned to exactly one A4 page -----------------------
         // Fixed height (not minHeight) + overflow hidden is the hard
@@ -213,7 +217,7 @@ export default function TraditionalTemplate({
         </Typography>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 3, mt: 0.5 }}>
+      <Box sx={{ display: "flex", gap: isFloral ? 2 : 3, mt: 0.5, flexDirection: isFloral ? "row-reverse" : "row" }}>
         <Box sx={{ flex: 1, minWidth: 0 }}>
           <Heading color={border}>Personal Details</Heading>
           <Row label="Date of Birth" value={data.personal.dob} />
@@ -250,7 +254,7 @@ export default function TraditionalTemplate({
                 width: 104,
                 height: 130,
                 border: `2px solid ${border}`,
-                borderRadius: "2px",
+                borderRadius: isFloral ? "50%" : "2px",
                 bgcolor: "#F1E7DC",
                 fontSize: 11,
                 color: border,
@@ -285,6 +289,8 @@ export default function TraditionalTemplate({
           </Typography>
         </>
       )}
+
+      <AdditionalDetailsSection data={data} accent={accent} text={ink} muted={border} border={border}  />
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 1.5 }}>
         <Box sx={{ width: 36, height: "1px", bgcolor: accent, opacity: 0.5 }} />

@@ -22,6 +22,8 @@ export interface BiodataFormData {
   invocation: ReactNode;
   photoDataUrl: string;
   personal: {
+    motherTongue: string;
+    hobbies: string;
     nakshatra: string;
     rashi: string;
     birthPlace: string;
@@ -96,7 +98,9 @@ export const emptyBiodata: BiodataFormData = {
     nakshatra: "",
     rashi: "",
     birthPlace: "",
-    birthTime: ""
+    birthTime: "",
+    motherTongue: "",
+    hobbies: ""
   },
   education: {
     qualification: "",

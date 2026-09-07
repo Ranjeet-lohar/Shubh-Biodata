@@ -2,6 +2,7 @@
 
 import { Box, Typography, Avatar, Grid } from "@mui/material";
 import { BiodataFormData } from "@/lib/types";
+import AdditionalDetailsSection from "./AdditionalDetailsSection";
 
 // ---- Palette (unchanged mood, slightly deeper contrast for print) ------
 const BG = "#2B1220";
@@ -49,7 +50,7 @@ function SectionTitle({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function RoyalTemplate({ data }: { data: BiodataFormData }) {
+export default function ElegantTemplate({ data }: { data: BiodataFormData }) {
   const name = data.personal.fullName || "Your Name Here";
   const tagline = [data.education?.occupation, data.contact?.city].filter(Boolean).join(" · ");
 
@@ -190,6 +191,8 @@ export default function RoyalTemplate({ data }: { data: BiodataFormData }) {
             </Typography>
           </>
         )}
+
+        <AdditionalDetailsSection data={data} accent={GOLD} text={CREAM} muted={GOLD_DIM} border={GOLD_DIM}  />
       </Box>
 
       {/* Footer rule */}
