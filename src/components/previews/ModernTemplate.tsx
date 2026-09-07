@@ -258,7 +258,8 @@ export default function ModernTemplate({
                 color: isTeal ? "rgba(255,255,255,0.85)" : "#5B5142",
                 mt: 1.5,
                 lineHeight: 1.6,
-                maxWidth: 460,
+                maxWidth: "100%",
+                overflowWrap: "anywhere",
               }}
             >
               &ldquo;{data.about}&rdquo;

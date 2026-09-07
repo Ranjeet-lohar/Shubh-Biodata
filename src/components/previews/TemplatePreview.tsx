@@ -89,10 +89,13 @@ const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: B
       <Box
         ref={setPreviewRef}
         sx={{
-          width: 554, // A4 @ 96dpi width for a larger, crisper live preview
-          maxWidth: "554px",
+          width: "min(100%, 554px)",
+          maxWidth: "100%",
+          minWidth: 0,
+          boxSizing: "border-box",
           height: "100%",
           mx: "auto",
+          overflow: "hidden",
           boxShadow: "0 12px 40px rgba(43,29,34,0.14)",
           bgcolor: "transparent",
           // print-friendly tweaks: remove chrome in print/export

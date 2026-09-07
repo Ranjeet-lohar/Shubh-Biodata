@@ -164,37 +164,37 @@ export default function EditorPage() {
   };
 
 
-// ...inside component, alongside your other refs/state:
-const scrollerRef = useRef<HTMLDivElement>(null);
-const dragState = useRef({ isDown: false, startX: 0, startScroll: 0, moved: false });
+  // ...inside component, alongside your other refs/state:
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const dragState = useRef({ isDown: false, startX: 0, startScroll: 0, moved: false });
 
-const onMouseDown = useCallback((e: React.MouseEvent) => {
-  const el = scrollerRef.current;
-  if (!el) return;
-  dragState.current = {
-    isDown: true,
-    startX: e.pageX - el.offsetLeft,
-    startScroll: el.scrollLeft,
-    moved: false,
-  };
-}, []);
+  const onMouseDown = useCallback((e: React.MouseEvent) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    dragState.current = {
+      isDown: true,
+      startX: e.pageX - el.offsetLeft,
+      startScroll: el.scrollLeft,
+      moved: false,
+    };
+  }, []);
 
-const onMouseMove = useCallback((e: React.MouseEvent) => {
-  const el = scrollerRef.current;
-  if (!el || !dragState.current.isDown) return;
-  e.preventDefault();
-  const x = e.pageX - el.offsetLeft;
-  const walk = x - dragState.current.startX;
-  if (Math.abs(walk) > 4) dragState.current.moved = true; // treat as drag, not click
-  el.scrollLeft = dragState.current.startScroll - walk;
-}, []);
+  const onMouseMove = useCallback((e: React.MouseEvent) => {
+    const el = scrollerRef.current;
+    if (!el || !dragState.current.isDown) return;
+    e.preventDefault();
+    const x = e.pageX - el.offsetLeft;
+    const walk = x - dragState.current.startX;
+    if (Math.abs(walk) > 4) dragState.current.moved = true; // treat as drag, not click
+    el.scrollLeft = dragState.current.startScroll - walk;
+  }, []);
 
-const endDrag = useCallback(() => {
-  dragState.current.isDown = false;
-}, []);
+  const endDrag = useCallback(() => {
+    dragState.current.isDown = false;
+  }, []);
 
-// use on each template button's onClick:
-// onClick={() => { if (!dragState.current.moved) router.push(`/editor/${item.id}`); }}
+  // use on each template button's onClick:
+  // onClick={() => { if (!dragState.current.moved) router.push(`/editor/${item.id}`); }}
   return (
     <Box
       className={`${display.variable} ${body.variable}`}
@@ -314,7 +314,7 @@ const endDrag = useCallback(() => {
                   setData(next);
                   try {
                     window.sessionStorage.setItem("biodata-draft", JSON.stringify(next));
-                  } catch {}
+                  } catch { }
                 }}
               />
             </Paper>
@@ -322,7 +322,7 @@ const endDrag = useCallback(() => {
             {!isMobile && <KalavaThread />}
 
             {!isMobile && (
-              <Box sx={{ width: 460, flexShrink: 0, position: "sticky", top: 95 }}>
+              <Box sx={{ width: { md: "min(460px, 42vw)", lg: 460 }, maxWidth: "100%", flexShrink: 1, position: "sticky", top: 95 }}>
                 <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0.75, mb: 1.5 }}>
                   <Box sx={{ width: 5, height: 5, borderRadius: "50%", bgcolor: MEHENDI }} />
                   <EyebrowLabel>Live preview</EyebrowLabel>
@@ -330,82 +330,82 @@ const endDrag = useCallback(() => {
                 </Box>
 
                 <Paper
-  variant="outlined"
-  sx={{
-    mb: 2,
-    p: 1.25,
-    borderRadius: 2,
-    borderColor: LINE,
-    bgcolor: "rgba(255,255,255,0.78)",
-  }}
->
-  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
-    <Typography sx={{ fontSize: 12, fontWeight: 800, color: INK }}>Design browser</Typography>
-    <Typography sx={{ fontSize: 10.5, color: "text.secondary" }}>{templates.length} styles</Typography>
-  </Box>
-  <Box
-    ref={scrollerRef}
-    onMouseDown={onMouseDown}
-    onMouseMove={onMouseMove}
-    onMouseUp={endDrag}
-    onMouseLeave={endDrag}
-    sx={{
-      display: "flex",
-      gap: 1,
-      overflowX: "auto",
-      pb: 0.5,
-      cursor: "grab",
-      userSelect: "none",
-      scrollBehavior: dragState.current.isDown ? "auto" : "smooth",
-      "&:active": { cursor: "grabbing" },
-      "&::-webkit-scrollbar": { height: 4 },
-      "&::-webkit-scrollbar-thumb": { bgcolor: GOLD, borderRadius: 4 },
-    }}
-  >
-    {templates.map((item) => {
-      const active = item.id === template.id;
-      return (
-        <Box
-          key={item.id}
-          component="button"
-          type="button"
-          onClick={() => {
-            if (dragState.current.moved) return; // suppress click after a drag
-            router.push(`/editor/${item.id}`);
-          }}
-          aria-label={`Use ${item.name} template`}
-          sx={{
-            minWidth: 92,
-            p: 0.7,
-            border: "1px solid",
-            borderColor: active ? MAROON : LINE,
-            borderRadius: 1.5,
-            bgcolor: active ? "rgba(140,42,56,0.07)" : "#fff",
-            textAlign: "left",
-            cursor: "pointer",
-            transition: "transform 160ms ease, border-color 160ms ease",
-            "&:hover": { transform: "translateY(-2px)", borderColor: GOLD },
-          }}
-        >
-          <Box
-            sx={{
-              height: 42,
-              mb: 0.6,
-              borderRadius: 0.75,
-              border: `3px solid ${item.swatch[0]}`,
-              background: `linear-gradient(135deg, ${item.swatch[0]} 0 34%, ${item.swatch[1]} 34% 52%, ${item.swatch[2]} 52%)`,
-              pointerEvents: "none", // prevent img/box from swallowing drag events
-            }}
-          />
-          <Typography noWrap sx={{ fontSize: 10.5, fontWeight: 800, color: INK }}>{item.name}</Typography>
-          <Typography noWrap sx={{ fontSize: 9.5, color: "text.secondary" }}>{item.category}</Typography>
-        </Box>
-      );
-    })}
-  </Box>
-</Paper>
+                  variant="outlined"
+                  sx={{
+                    mb: 2,
+                    p: 1.25,
+                    borderRadius: 2,
+                    borderColor: LINE,
+                    bgcolor: "rgba(255,255,255,0.78)",
+                  }}
+                >
+                  <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                    <Typography sx={{ fontSize: 12, fontWeight: 800, color: INK }}>Design browser</Typography>
+                    <Typography sx={{ fontSize: 10.5, color: "text.secondary" }}>{templates.length} styles</Typography>
+                  </Box>
+                  <Box
+                    ref={scrollerRef}
+                    onMouseDown={onMouseDown}
+                    onMouseMove={onMouseMove}
+                    onMouseUp={endDrag}
+                    onMouseLeave={endDrag}
+                    sx={{
+                      display: "flex",
+                      gap: 1,
+                      overflowX: "auto",
+                      pb: 0.5,
+                      cursor: "grab",
+                      userSelect: "none",
+                      scrollBehavior: dragState.current.isDown ? "auto" : "smooth",
+                      "&:active": { cursor: "grabbing" },
+                      "&::-webkit-scrollbar": { height: 4 },
+                      "&::-webkit-scrollbar-thumb": { bgcolor: GOLD, borderRadius: 4 },
+                    }}
+                  >
+                    {templates.map((item) => {
+                      const active = item.id === template.id;
+                      return (
+                        <Box
+                          key={item.id}
+                          component="button"
+                          type="button"
+                          onClick={() => {
+                            if (dragState.current.moved) return; // suppress click after a drag
+                            router.push(`/editor/${item.id}`);
+                          }}
+                          aria-label={`Use ${item.name} template`}
+                          sx={{
+                            minWidth: 92,
+                            p: 0.7,
+                            border: "1px solid",
+                            borderColor: active ? MAROON : LINE,
+                            borderRadius: 1.5,
+                            bgcolor: active ? "rgba(140,42,56,0.07)" : "#fff",
+                            textAlign: "left",
+                            cursor: "pointer",
+                            transition: "transform 160ms ease, border-color 160ms ease",
+                            "&:hover": { transform: "translateY(-2px)", borderColor: GOLD },
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              height: 42,
+                              mb: 0.6,
+                              borderRadius: 0.75,
+                              border: `3px solid ${item.swatch[0]}`,
+                              background: `linear-gradient(135deg, ${item.swatch[0]} 0 34%, ${item.swatch[1]} 34% 52%, ${item.swatch[2]} 52%)`,
+                              pointerEvents: "none", // prevent img/box from swallowing drag events
+                            }}
+                          />
+                          <Typography noWrap sx={{ fontSize: 10.5, fontWeight: 800, color: INK }}>{item.name}</Typography>
+                          <Typography noWrap sx={{ fontSize: 9.5, color: "text.secondary" }}>{item.category}</Typography>
+                        </Box>
+                      );
+                    })}
+                  </Box>
+                </Paper>
 
-                <Box sx={{ transform: "scale(0.78)", transformOrigin: "top left", width: 554, maxWidth: "554px" }}>
+                <Box sx={{ width: "min(100%, 554px)", maxWidth: "100%", minWidth: 0, mx: "auto", transform: "scale(0.98)", transformOrigin: "top center" }}>
                   <TemplatePreview key={`${template.id}-${language}`} ref={previewRef} templateId={template.id} data={data} language={language} />
                 </Box>
               </Box>
@@ -417,7 +417,7 @@ const endDrag = useCallback(() => {
       {/* Hidden full-scale node for accurate PDF capture on mobile scaled/hidden */}
       {isMobile && (
         <Box sx={{ position: "fixed", left: -9999, top: 0 }}>
-            <TemplatePreview key={`${template.id}-${language}`} ref={previewRef} templateId={template.id} data={data} language={language} />
+          <TemplatePreview key={`${template.id}-${language}`} ref={previewRef} templateId={template.id} data={data} language={language} />
         </Box>
       )}
 
@@ -428,7 +428,7 @@ const endDrag = useCallback(() => {
               <CloseIcon />
             </IconButton>
           </Box>
-          <Box sx={{ transform: "scale(0.85)", transformOrigin: "top center" }}>
+          <Box sx={{ width: "min(100%, 554px)", maxWidth: "100%", minWidth: 0, mx: "auto", transform: { xs: "none", sm: "scale(0.85)" }, transformOrigin: "top center" }}>
             <TemplatePreview key={`${template.id}-${language}`} templateId={template.id} data={data} language={language} />
           </Box>
         </Box>

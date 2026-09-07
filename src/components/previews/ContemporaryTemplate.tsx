@@ -167,7 +167,7 @@ export default function ContemporaryTemplate({
   },
   pavilion: {
     frameRadius: 2.5,
-    bannerHeight: 120,
+    bannerHeight: 130,
     bannerClip: "polygon(0 0, 90% 0, 100% 88%, 0 100%)",
     contentPadding: 5,
     photoRadius: "12px",
