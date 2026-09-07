@@ -72,7 +72,7 @@ function SectionHeading({
   line: string;
 }) {
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1.5, "@media print": { mb: 0.6 } }}>
       <Box sx={{ width: 6, height: 6, bgcolor: gold, transform: "rotate(45deg)", flexShrink: 0 }} />
       <Typography
         sx={{
@@ -82,6 +82,7 @@ function SectionHeading({
           textTransform: "uppercase",
           color: goldDeep,
           whiteSpace: "nowrap",
+          "@media print": { fontSize: 9 },
         }}
       >
         {children}
@@ -94,7 +95,7 @@ function SectionHeading({
 function Item({ label, value, ink, goldDeep }: { label: string; value: string; ink: string; goldDeep: string }) {
   if (!value) return null;
   return (
-    <Box sx={{ py: 0.9, "@media print": { py: 0.55 } }}>
+    <Box sx={{ py: 0.9, "@media print": { py: 0.28 } }}>
       <Typography
         sx={{
           fontSize: 9.5,
@@ -103,11 +104,21 @@ function Item({ label, value, ink, goldDeep }: { label: string; value: string; i
           textTransform: "uppercase",
           color: goldDeep,
           opacity: 0.85,
+          "@media print": { fontSize: 7.5 },
         }}
       >
         {label}
       </Typography>
-      <Typography sx={{ fontSize: 13.5, fontWeight: 600, color: ink, lineHeight: 1.45, mt: 0.25 }}>
+      <Typography
+        sx={{
+          fontSize: 13.5,
+          fontWeight: 600,
+          color: ink,
+          lineHeight: 1.45,
+          mt: 0.25,
+          "@media print": { fontSize: 10.5, lineHeight: 1.25, mt: 0.1 },
+        }}
+      >
         {value}
       </Typography>
     </Box>
@@ -167,10 +178,15 @@ export default function ModernTemplate({
           border: "none",
           borderRadius: 0,
           width: "210mm",
+          height: "297mm",
           minHeight: "297mm",
+          maxHeight: "297mm",
           margin: "0 auto",
           pageBreakInside: "avoid",
           breakInside: "avoid",
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
           printColorAdjust: "exact",
           WebkitPrintColorAdjust: "exact",
           colorAdjust: "exact",
@@ -184,7 +200,7 @@ export default function ModernTemplate({
       <Box sx={{ position: "absolute", bottom: 8, right: 8, width: 56, height: 56, backgroundImage: corner, backgroundRepeat: "no-repeat", transform: "scale(-1,-1)", pointerEvents: "none" }} />
 
       {/* Outer hairline frame */}
-      <Box sx={{ position: "absolute", inset: 10, border: `1px solid ${LINE}`, pointerEvents: "none" }} />
+      <Box sx={{ position: "absolute", inset: 10, border: `1px solid ${LINE}`, pointerEvents: "none", "@media print": { inset: 6 } }} />
 
       {/* Header */}
       <Box
@@ -199,6 +215,14 @@ export default function ModernTemplate({
           textAlign: "left",
           background: isTeal ? `linear-gradient(135deg, ${INK} 0%, ${GOLD_DEEP} 100%)` : "transparent",
           borderBottom: isTeal ? `4px solid ${GOLD}` : `1px solid ${LINE}`,
+          "@media print": {
+            px: 2.25,
+            pt: 1.75,
+            pb: 1.5,
+            gap: 1.75,
+            borderBottomWidth: isTeal ? "3px" : "1px",
+            flexShrink: 0,
+          },
         }}
       >
         <Box
@@ -212,6 +236,11 @@ export default function ModernTemplate({
             outline: `1px solid ${isTeal ? "rgba(255,255,255,0.5)" : LINE}`,
             outlineOffset: "4px",
             bgcolor: isTeal ? "rgba(255,255,255,0.08)" : IVORY,
+            "@media print": {
+              width: 80,
+              height: 80,
+              outlineOffset: "3px",
+            },
           }}
         >
           <Avatar
@@ -237,6 +266,7 @@ export default function ModernTemplate({
               color: isTeal ? "#fff" : INK,
               fontSize: 26,
               letterSpacing: "0.03em",
+              "@media print": { fontSize: 19 },
             }}
           >
             {data.personal.fullName || "Your Name Here"}
@@ -244,7 +274,14 @@ export default function ModernTemplate({
 
           {/* <DiamondRule gold={GOLD} align="left" /> */}
 
-          <Typography sx={{ fontSize: 12.5, color: isTeal ? "#F5E6B8" : GOLD_DEEP, letterSpacing: "0.06em" }}>
+          <Typography
+            sx={{
+              fontSize: 12.5,
+              color: isTeal ? "#F5E6B8" : GOLD_DEEP,
+              letterSpacing: "0.06em",
+              "@media print": { fontSize: 10 },
+            }}
+          >
             {[data.education.occupation, data.contact.city].filter(Boolean).join("   •   ") ||
               "Occupation   •   City"}
           </Typography>
@@ -258,8 +295,8 @@ export default function ModernTemplate({
                 color: isTeal ? "rgba(255,255,255,0.85)" : "#5B5142",
                 mt: 1.5,
                 lineHeight: 1.6,
-                maxWidth: "100%",
-                overflowWrap: "anywhere",
+                maxWidth: 460,
+                "@media print": { fontSize: 10, mt: 0.75, lineHeight: 1.35 },
               }}
             >
               &ldquo;{data.about}&rdquo;
@@ -269,8 +306,29 @@ export default function ModernTemplate({
       </Box>
 
       {/* Body */}
-      <Box sx={{ position: "relative", px: 4, py: 3.5 }}>
-        <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "1fr 1px 1fr" }, columnGap: 3 }}>
+      <Box
+        sx={{
+          position: "relative",
+          px: 4,
+          py: 3.5,
+          "@media print": {
+            px: 2.25,
+            py: 1.5,
+            flex: 1,
+            overflow: "hidden",
+            display: "flex",
+            flexDirection: "column",
+          },
+        }}
+      >
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1px 1fr",
+            columnGap: 3,
+            "@media print": { columnGap: 2 },
+          }}
+        >
           <Box>
             <SectionHeading gold={GOLD} goldDeep={GOLD_DEEP} line={LINE}>Personal</SectionHeading>
             {personalItems.map(([label, value]) => (
@@ -289,9 +347,23 @@ export default function ModernTemplate({
         </Box>
 
         {data.extras && Object.values(data.extras).some((items) => items.length > 0) && (
-          <Box sx={{ mt: 2.5, pt: 2.5, borderTop: `1px solid ${LINE}` }}>
+          <Box
+            sx={{
+              mt: 2.5,
+              pt: 2.5,
+              borderTop: `1px solid ${LINE}`,
+              "@media print": { mt: 1, pt: 1 },
+            }}
+          >
             <SectionHeading gold={GOLD} goldDeep={GOLD_DEEP} line={LINE}>Additional Details</SectionHeading>
-            <Box sx={{ display: "grid", gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" }, columnGap: 3 }}>
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" },
+                columnGap: 3,
+                "@media print": { columnGap: 2 },
+              }}
+            >
               {Object.values(data.extras).flat().map((item, index) => (
                 <Item key={`${item.label}-${index}`} label={item.label} value={item.value} ink={INK} goldDeep={GOLD_DEEP} />
               ))}
@@ -309,21 +381,33 @@ export default function ModernTemplate({
             flexDirection: "column",
             alignItems: "center",
             gap: 0.75,
+            "@media print": { mt: "auto", pt: 1, gap: 0.4 },
           }}
         >
           <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 2 }}>
             {data.contact.phone && (
-              <Typography sx={{ fontSize: 12, color: INK, fontWeight: 600 }}>{data.contact.phone}</Typography>
+              <Typography sx={{ fontSize: 12, color: INK, fontWeight: 600, "@media print": { fontSize: 9.5 } }}>
+                {data.contact.phone}
+              </Typography>
             )}
             {data.contact.phone && data.contact.email && (
               <Box sx={{ width: 4, height: 4, bgcolor: GOLD, transform: "rotate(45deg)" }} />
             )}
             {data.contact.email && (
-              <Typography sx={{ fontSize: 12, color: INK, fontWeight: 600 }}>{data.contact.email}</Typography>
+              <Typography sx={{ fontSize: 12, color: INK, fontWeight: 600, "@media print": { fontSize: 9.5 } }}>
+                {data.contact.email}
+              </Typography>
             )}
           </Box>
           {data.contact.address && (
-            <Typography sx={{ fontSize: 11.5, color: "#5B5142", textAlign: "center" }}>
+            <Typography
+              sx={{
+                fontSize: 11.5,
+                color: "#5B5142",
+                textAlign: "center",
+                "@media print": { fontSize: 9 },
+              }}
+            >
               {data.contact.address}
             </Typography>
           )}

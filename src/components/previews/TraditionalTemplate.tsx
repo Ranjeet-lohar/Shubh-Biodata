@@ -2,7 +2,6 @@
 
 import { Box, Typography, Avatar } from "@mui/material";
 import { BiodataFormData } from "@/lib/types";
-import AdditionalDetailsSection from "./AdditionalDetailsSection";
 
 // Side-by-side label/value — safe for wide columns (Personal, Education,
 // Contact) where 44%/56% leaves plenty of room for both.
@@ -289,8 +288,6 @@ export default function TraditionalTemplate({
           </Typography>
         </>
       )}
-
-      <AdditionalDetailsSection data={data} accent={accent} text={ink} muted={border} border={border}  />
 
       <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 1.5 }}>
         <Box sx={{ width: 36, height: "1px", bgcolor: accent, opacity: 0.5 }} />

@@ -18,6 +18,18 @@ export async function exportNodeToPdf(node: HTMLElement, filename: string, langu
   cloned.style.transform = "none";
   cloned.style.maxWidth = "none";
 
+  // Export the complete document rather than the constrained live preview.
+  // Several templates use fixed A4 print bounds and hidden overflow to keep
+  // the editor card tidy; those bounds would otherwise clip long biodatas.
+  const exportElements = [cloned, ...Array.from(cloned.querySelectorAll<HTMLElement>("*"))];
+  exportElements.forEach((element) => {
+    element.style.overflow = "visible";
+    element.style.maxHeight = "none";
+    element.style.aspectRatio = "auto";
+  });
+  cloned.style.height = "auto";
+  cloned.style.minHeight = "0";
+
   if (language === "hi") {
     const walker = document.createTreeWalker(cloned, NodeFilter.SHOW_TEXT);
     let current = walker.nextNode();
@@ -34,7 +46,14 @@ export async function exportNodeToPdf(node: HTMLElement, filename: string, langu
   wrapper.style.position = "fixed";
   wrapper.style.left = "-9999px";
   wrapper.style.top = "0";
-  wrapper.style.width = `${node.offsetWidth}px`;
+  wrapper.style.width = "794px";
+  wrapper.style.minHeight = "1123px";
+  wrapper.style.background = "#ffffff";
+  wrapper.style.overflow = "visible";
+  cloned.classList.add("pdf-export");
+  cloned.style.width = "794px";
+  cloned.style.maxWidth = "794px";
+  cloned.style.minHeight = "0";
   wrapper.appendChild(cloned);
   document.body.appendChild(wrapper);
 
@@ -53,24 +72,15 @@ export async function exportNodeToPdf(node: HTMLElement, filename: string, langu
     const pageWidth = pdf.internal.pageSize.getWidth();
     const pageHeight = pdf.internal.pageSize.getHeight();
 
-    const imgWidth = pageWidth;
-    const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-    // Add the image and slice across pages if needed. Use a stable pagination
-    // approach by drawing the same tall image at progressively shifted
-    // vertical offsets.
-    let heightLeft = imgHeight;
-    let position = 0;
-
-    pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-    heightLeft -= pageHeight;
-
-    while (heightLeft > 0) {
-      position -= pageHeight;
-      pdf.addPage();
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pageHeight;
-    }
+    // Fit the complete biodata to one A4 page. Scaling the finished bitmap
+    // keeps text and custom fields together without splitting rows or causing
+    // CSS overflow to overlap neighboring content.
+    const fit = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+    const imgWidth = canvas.width * fit;
+    const imgHeight = canvas.height * fit;
+    const left = (pageWidth - imgWidth) / 2;
+    const top = (pageHeight - imgHeight) / 2;
+    pdf.addImage(imgData, "PNG", left, top, imgWidth, imgHeight);
 
     pdf.save(filename);
   } finally {

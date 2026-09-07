@@ -73,7 +73,7 @@ function Line({ label, value }: { label: string; value: string }) {
       }}
     >
       <Typography sx={{ fontSize: 10.5, color: "#8A7C6B" }}>{label}</Typography>
-      <Typography sx={{ fontSize: 11.5, fontWeight: 600, color: INK, lineHeight: 1.4 }}>{value}</Typography>
+      <Typography sx={{ fontSize: 10.5, fontWeight: 600, color: INK, lineHeight: 1.4 }}>{value}</Typography>
     </Box>
   );
 }

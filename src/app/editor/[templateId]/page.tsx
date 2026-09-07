@@ -60,23 +60,62 @@ const body = Manrope({
 // standing in for a plain divider between the form and the live preview.
 function KalavaThread() {
   return (
-    <Box
-      component="svg"
-      viewBox="0 0 24 640"
-      preserveAspectRatio="none"
-      sx={{ width: 24, height: "100%", maxHeight: 500, flexShrink: 0, display: { xs: "none", md: "block" } }}
-    >
-      <path
-        d="M12 0 C 22 40, 2 80, 12 120 C 22 160, 2 200, 12 240 C 22 280, 2 320, 12 360 C 22 400, 2 440, 12 480 C 22 520, 2 560, 12 600 L 12 640"
-        fill="none"
-        stroke={GOLD}
-        strokeWidth={2}
-        opacity={0.55}
-      />
-      {Array.from({ length: 11 }).map((_, i) => (
-        <circle key={i} cx={12} cy={30 + i * 58} r={i % 3 === 0 ? 4.5 : 3} fill={i % 3 === 0 ? MAROON : GOLD} opacity={0.85} />
-      ))}
-    </Box>
+  <Box
+  component="svg"
+  viewBox="0 0 24 780"
+  preserveAspectRatio="none"
+  sx={{ width: 24, height: "100%", maxHeight: 780, flexShrink: 0, display: { xs: "none", md: "block" } }}
+>
+  {/* Central spine */}
+  <line x1={12} y1={0} x2={12} y2={780} stroke={GOLD} strokeWidth={1} opacity={0.4} />
+
+  {Array.from({ length: 13 }).map((_, i) => {
+    const cy = 30 + i * 60;
+    const isMajor = i % 2 === 0;
+    return (
+      <g key={i}>
+        {/* Diamond frame at each node */}
+        <rect
+          x={12 - (isMajor ? 7 : 4.5)}
+          y={cy - (isMajor ? 7 : 4.5)}
+          width={isMajor ? 14 : 9}
+          height={isMajor ? 14 : 9}
+          fill={isMajor ? "none" : MAROON}
+          stroke={isMajor ? MAROON : "none"}
+          strokeWidth={1.4}
+          opacity={0.85}
+          transform={`rotate(45 12 ${cy})`}
+        />
+        {isMajor && (
+          <rect
+            x={12 - 3}
+            y={cy - 3}
+            width={6}
+            height={6}
+            fill={GOLD}
+            transform={`rotate(45 12 ${cy})`}
+          />
+        )}
+
+        {/* Leaf flourishes branching outward, only at major nodes */}
+        {isMajor && (
+          <>
+            <path
+              d={`M12 ${cy} C 4 ${cy - 10}, 2 ${cy - 2}, 12 ${cy}`}
+              fill={GOLD}
+              opacity={0.6}
+            />
+            <path
+              d={`M12 ${cy} C 20 ${cy + 10}, 22 ${cy + 2}, 12 ${cy}`}
+              fill={GOLD}
+              opacity={0.6}
+            />
+          </>
+        )}
+      </g>
+    );
+  })}
+</Box>
   );
 }
 

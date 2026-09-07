@@ -98,6 +98,7 @@ const TemplatePreview = forwardRef<HTMLDivElement, { templateId: string; data: B
           overflow: "hidden",
           boxShadow: "0 12px 40px rgba(43,29,34,0.14)",
           bgcolor: "transparent",
+        
           // print-friendly tweaks: remove chrome in print/export
           "@media print": {
             boxShadow: "none",
